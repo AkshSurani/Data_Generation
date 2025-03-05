@@ -1,0 +1,31 @@
+LocationID,City,State,ZipCode,ActiveFlag,CreatedDate,ModifiedDate
+1,Delhi,Delhi,780487,Yes,2022-08-08 10:50:41,
+2,Mumbai,Maharashtra,887572,No,2022-09-15 18:38:57,
+3,Bangalore,Karnataka,344053,Yes,2024-11-05 03:26:27,
+4,Hyderabad,Telangana,217473,Yes,2022-03-22 20:33:21,2023-07-27 10:04:55
+5,Chennai,Tamil Nadu,681858,Yes,2022-10-27 11:48:42,
+6,Kolkata,West Bengal,552417,Yes,2023-04-25 14:33:58,
+7,Pune,Maharashtra,208246,Yes,2023-08-31 22:31:06,
+8,Ahmedabad,Gujarat,639903,Yes,2024-11-17 02:50:50,2024-12-26 12:36:21
+9,Jaipur,Rajasthan,698508,Yes,2023-10-02 16:28:12,
+10,Lucknow,Uttar Pradesh,791453,Yes,2024-10-15 10:42:18,2024-12-02 15:13:37
+11,Chandigarh,Punjab,549898,Yes,2022-03-16 18:55:15,
+12,Bhopal,Madhya Pradesh,727889,No,2023-08-13 14:55:31,
+13,Guwahati,Assam,116814,Yes,2024-04-28 16:42:03,2024-07-07 02:35:02
+14,Kochi,Kerala,277414,Yes,2024-08-09 15:19:08,2024-12-21 02:52:21
+15,Indore,Madhya Pradesh,466778,Yes,2022-07-28 17:49:43,
+16,Surat,Gujarat,335772,Yes,2023-11-28 20:23:07,2024-05-18 19:57:49
+17,Nagpur,Maharashtra,462944,Yes,2022-07-04 04:41:42,
+18,Patna,Bihar,508382,Yes,2023-08-04 19:28:57,
+19,Vadodara,Gujarat,998662,Yes,2023-05-15 13:26:17,2024-09-08 17:19:13
+20,Thane,Maharashtra,387370,Yes,2024-02-05 05:51:32,2024-04-08 11:04:46
+21,Agra,Uttar Pradesh,875179,Yes,2022-03-21 02:33:09,2024-01-27 00:09:02
+22,Nashik,Maharashtra,240889,Yes,2022-12-30 16:04:54,2024-04-15 11:31:37
+23,Faridabad,Haryana,506922,Yes,2023-09-23 19:28:14,
+24,Meerut,Uttar Pradesh,417419,Yes,2024-09-21 10:54:12,2024-10-15 19:34:49
+25,Rajkot,Gujarat,758564,Yes,2022-06-30 00:18:49,2024-12-06 21:23:26
+26,Varanasi,Uttar Pradesh,489201,Yes,2024-10-05 14:50:53,2024-10-16 05:23:48
+27,Srinagar,Jammu and Kashmir,848797,Yes,2024-10-05 20:52:21,
+28,Aurangabad,Maharashtra,803384,Yes,2023-06-12 22:28:49,
+29,Dhanbad,Jharkhand,413445,Yes,2024-04-30 06:06:48,2024-11-03 17:06:38
+30,Amritsar,Punjab,354098,Yes,2024-04-12 03:15:21,2024-09-19 04:40:36
