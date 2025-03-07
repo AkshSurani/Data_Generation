@@ -1,31 +1,31 @@
-LocationID,City,State,ZipCode,ActiveFlag,CreatedDate,ModifiedDate
-1,Delhi,Delhi,780487,Yes,2022-08-08 10:50:41,
-2,Mumbai,Maharashtra,887572,No,2022-09-15 18:38:57,
-3,Bangalore,Karnataka,344053,Yes,2024-11-05 03:26:27,
-4,Hyderabad,Telangana,217473,Yes,2022-03-22 20:33:21,2023-07-27 10:04:55
-5,Chennai,Tamil Nadu,681858,Yes,2022-10-27 11:48:42,
-6,Kolkata,West Bengal,552417,Yes,2023-04-25 14:33:58,
-7,Pune,Maharashtra,208246,Yes,2023-08-31 22:31:06,
-8,Ahmedabad,Gujarat,639903,Yes,2024-11-17 02:50:50,2024-12-26 12:36:21
-9,Jaipur,Rajasthan,698508,Yes,2023-10-02 16:28:12,
-10,Lucknow,Uttar Pradesh,791453,Yes,2024-10-15 10:42:18,2024-12-02 15:13:37
-11,Chandigarh,Punjab,549898,Yes,2022-03-16 18:55:15,
-12,Bhopal,Madhya Pradesh,727889,No,2023-08-13 14:55:31,
-13,Guwahati,Assam,116814,Yes,2024-04-28 16:42:03,2024-07-07 02:35:02
-14,Kochi,Kerala,277414,Yes,2024-08-09 15:19:08,2024-12-21 02:52:21
-15,Indore,Madhya Pradesh,466778,Yes,2022-07-28 17:49:43,
-16,Surat,Gujarat,335772,Yes,2023-11-28 20:23:07,2024-05-18 19:57:49
-17,Nagpur,Maharashtra,462944,Yes,2022-07-04 04:41:42,
-18,Patna,Bihar,508382,Yes,2023-08-04 19:28:57,
-19,Vadodara,Gujarat,998662,Yes,2023-05-15 13:26:17,2024-09-08 17:19:13
-20,Thane,Maharashtra,387370,Yes,2024-02-05 05:51:32,2024-04-08 11:04:46
-21,Agra,Uttar Pradesh,875179,Yes,2022-03-21 02:33:09,2024-01-27 00:09:02
-22,Nashik,Maharashtra,240889,Yes,2022-12-30 16:04:54,2024-04-15 11:31:37
-23,Faridabad,Haryana,506922,Yes,2023-09-23 19:28:14,
-24,Meerut,Uttar Pradesh,417419,Yes,2024-09-21 10:54:12,2024-10-15 19:34:49
-25,Rajkot,Gujarat,758564,Yes,2022-06-30 00:18:49,2024-12-06 21:23:26
-26,Varanasi,Uttar Pradesh,489201,Yes,2024-10-05 14:50:53,2024-10-16 05:23:48
-27,Srinagar,Jammu and Kashmir,848797,Yes,2024-10-05 20:52:21,
-28,Aurangabad,Maharashtra,803384,Yes,2023-06-12 22:28:49,
-29,Dhanbad,Jharkhand,413445,Yes,2024-04-30 06:06:48,2024-11-03 17:06:38
-30,Amritsar,Punjab,354098,Yes,2024-04-12 03:15:21,2024-09-19 04:40:36
+LocationID,City,State,PinCode,ActiveFlag,CreatedDate,ModifiedDate
+1,Delhi,Delhi,780487,True,2024-12-07 23:00:07,
+2,Mumbai,Maharashtra,887572,False,2024-02-04 17:58:25,
+3,Bangalore,Karnataka,344053,True,2024-02-26 20:47:02,
+4,Hyderabad,Telangana,217473,True,2024-10-27 13:59:53,2024-12-31 14:19:43
+5,Chennai,Tamil Nadu,681858,True,2022-05-13 20:00:18,
+6,Kolkata,West Bengal,552417,True,2025-01-12 14:59:45,
+7,Pune,Maharashtra,208246,True,2023-03-14 23:14:23,
+8,Ahmedabad,Gujarat,639903,True,2024-05-03 15:00:30,2024-08-31 11:10:22
+9,Jaipur,Rajasthan,698508,True,2024-07-05 17:41:52,
+10,Lucknow,Uttar Pradesh,791453,True,2022-10-29 13:23:14,2024-08-22 01:52:02
+11,Chandigarh,Punjab,549898,True,2025-03-04 14:40:58,
+12,Bhopal,Madhya Pradesh,727889,False,2023-05-01 11:34:44,
+13,Guwahati,Assam,116814,True,2024-09-15 16:54:14,2025-01-07 23:31:32
+14,Kochi,Kerala,277414,True,2023-01-12 22:08:44,2024-10-08 10:33:10
+15,Indore,Madhya Pradesh,466778,True,2023-08-10 15:49:44,
+16,Surat,Gujarat,335772,True,2023-04-15 19:10:25,2024-12-04 16:53:54
+17,Nagpur,Maharashtra,462944,True,2022-03-28 15:15:16,
+18,Patna,Bihar,508382,True,2024-02-06 09:08:09,
+19,Vadodara,Gujarat,998662,True,2023-12-17 21:04:05,2024-01-16 05:24:13
+20,Thane,Maharashtra,387370,True,2022-03-21 15:01:13,2024-06-12 08:30:30
+21,Agra,Uttar Pradesh,875179,True,2024-01-13 13:14:44,2024-05-23 04:45:12
+22,Nashik,Maharashtra,240889,True,2022-12-23 00:47:30,2024-12-12 14:03:51
+23,Faridabad,Haryana,506922,True,2022-05-12 10:13:03,
+24,Meerut,Uttar Pradesh,417419,True,2024-04-12 00:12:08,2024-11-28 07:04:20
+25,Rajkot,Gujarat,758564,True,2025-03-01 23:31:38,2025-03-04 09:13:50
+26,Varanasi,Uttar Pradesh,489201,True,2024-03-23 15:32:30,2025-01-18 20:40:29
+27,Srinagar,Jammu and Kashmir,848797,True,2024-10-22 13:41:42,
+28,Aurangabad,Maharashtra,803384,True,2024-10-31 05:30:37,
+29,Dhanbad,Jharkhand,413445,True,2024-03-06 18:34:45,2024-04-26 08:27:50
+30,Amritsar,Punjab,354098,True,2024-05-24 05:28:47,2025-02-06 14:14:43

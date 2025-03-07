@@ -142,6 +142,22 @@ def generate_restaurant_data(restaurant_start_id, restaurant_end_id, location_df
     second_parts = ["Kitchen", "Bistro", "Restaurant", "Cafe", "Diner", "Eatery", "Grill", 
                    "Bites", "Table", "Garden", "House", "Palace", "Corner", "Junction", "Hub"]
     
+     # Coupon types with different discount structures
+    coupon_types = [
+        # Regular coupons - [coupon_code, min_amount, discount_amount, description, payment_method (None for any)]
+        ["WELCOME", 500, 100, "₹100 off on orders above ₹500", None],
+        ["SPECIAL", 800, 150, "₹150 off on orders above ₹800", None],
+        ["WEEKEND", 1000, 200, "₹200 off on orders above ₹1000", None],
+        ["FESTIVAL", 1500, 300, "₹300 off on orders above ₹1500", None],
+        ["FIRSTORDER", 300, 75, "₹75 off on your first order above ₹300", None],
+        
+        # Payment-specific coupons
+        ["CREDITCARD", 750, 150, "₹150 off on orders above ₹750 with Credit Card", "CreditCard"],
+        ["DEBITCARD", 600, 100, "₹100 off on orders above ₹600 with Debit Card", "DebitCard"],
+        ["UPISAVE", 400, 80, "₹80 off on orders above ₹400 with UPI", "UPI"],
+        ["CASHBACK", 500, 75, "₹75 off on Cash payments above ₹500", "Cash"]
+    ]
+    
     data = []
     # Get only active locations
     active_locations = location_df[location_df['ActiveFlag'] == True]
@@ -191,6 +207,30 @@ def generate_restaurant_data(restaurant_start_id, restaurant_end_id, location_df
             created_date = fake.date_time_between(start_date='-3y', end_date='-1y')
             modified_date = fake.date_time_between(start_date=created_date, end_date='now')
             
+            # Generate 3-6 coupons for this restaurant
+            num_coupons = random.randint(3, 5)
+            restaurant_coupons = random.sample(coupon_types, min(num_coupons, len(coupon_types)))
+            
+            # Create JSON structure for coupons
+            coupons_json = []
+            for coupon in restaurant_coupons:
+                # Slightly vary the coupon parameters to make them unique
+                min_amount_variation = random.uniform(0.9, 1.1)
+                discount_variation = random.uniform(0.9, 1.1)
+                
+                coupon_data = {
+                    "code": f"{coupon[0]}_{restaurant_id}",
+                    "min_amount": int(coupon[1] * min_amount_variation),
+                    "discount_amount": int(coupon[2] * discount_variation),
+                    "description": coupon[3],
+                    "payment_method": coupon[4]  # None or specific payment method
+                }
+                coupons_json.append(coupon_data)
+            
+            # Convert to JSON string
+            coupons_str = json.dumps(coupons_json)
+            
+            
             data.append({
                 'RestaurantID': restaurant_id,
                 'Name': name,
@@ -204,6 +244,7 @@ def generate_restaurant_data(restaurant_start_id, restaurant_end_id, location_df
                 'Locality': locality,
                 'Restaurant_Address': restaurant_address,
                 'Ratings': 0,
+                'Coupons': coupons_str,  # New field for coupons
                 'Latitude': latitude,
                 'Longitude': longitude,
                 'CreatedDate': created_date,
@@ -643,9 +684,10 @@ def generate_delivery_agent_data(delivery_agents_start_id, delivery_agent_end_id
     
     return pd.DataFrame(data)
 
+
 def generate_orders_data(order_start_id, order_end_id, customer_df, restaurant_df, address_df, location_df):
     order_statuses = ['Delivered', 'Canceled', 'Failed', 'Returned']
-    payment_methods = ['Cash', 'UPI', 'Wallet']
+    payment_methods = ['Cash', 'UPI', 'CreditCard', 'DebitCard']
     
     data = []
     order_id = order_start_id
@@ -663,6 +705,9 @@ def generate_orders_data(order_start_id, order_end_id, customer_df, restaurant_d
             
         # Generate 1-5 orders for this customer
         num_orders = random.randint(1, 5)
+        
+        # Track if this is the first order for this customer
+        is_first_order = True
         
         for _ in range(num_orders):
             # Randomly select one of the customer's addresses
@@ -687,6 +732,7 @@ def generate_orders_data(order_start_id, order_end_id, customer_df, restaurant_d
             
             # Order amount (initially set to 0, will be updated later)
             total_amount = 0
+            final_amount = 0
             
             # Status
             # days_since_order = (datetime.now() - order_date).days
@@ -703,26 +749,74 @@ def generate_orders_data(order_start_id, order_end_id, customer_df, restaurant_d
                 )[0]
             
             # Payment method
-            payment_method = random.choice(payment_methods)
+            payment_method = np.random.choice(payment_methods,p=[0.2,0.7,0.05,0.05])
             
             # Created and modified dates
             created_date = order_date
             modified_date = fake.date_time_between(start_date=created_date, end_date='now')
+            # Get restaurant coupons
+            coupon_applied = False
+            coupon_code = None
+            discount_amount = 0
+            restaurant_coupons = None
+            try:
+                restaurant_coupons = json.loads(restaurant['Coupons'])
+            except:
+                restaurant_coupons = None
             
+            # Randomly decide whether to keep the coupons or set them to None
+            if np.random.rand() > 0.3:
+                restaurant_coupons = restaurant_coupons
+            else:
+                restaurant_coupons = None
+                   
+            # restaurant_coupons = np.random.choice([restaurant_coupons, None], p=[0.7, 0.3])            
+            # try:
+            #     restaurant_coupons = json.loads(restaurant['Coupons'])
+            #     # We'll store the coupon information but apply it later in the order_items function
+            #     # Store payment method with the order to check for payment-specific coupons later
+                
             data.append({
                 'OrderID': order_id,
                 'CustomerID': customer_id,
                 'RestaurantID': restaurant_id,
                 'OrderDate': order_date,
-                'TotalAmount': total_amount,  # Will be updated after order items are generated
+                'TotalAmount': total_amount,  # Will be updated in order_items function
+                'FinalAmount' : final_amount,
                 'Status': status,
                 'PaymentMethod': payment_method,
+                'IsFirstOrder': is_first_order,
+                'RestaurantCoupons': restaurant['Coupons'] if restaurant_coupons != None else None,  # Store all restaurant coupons
+                'CouponApplied': coupon_applied,
+                'CouponCode': coupon_code,
+                'DiscountAmount': discount_amount,
                 'CreatedDate': created_date,
                 'ModifiedDate': modified_date,
-                'AddressID': address_id  # Temp field to link delivery
+                'AddressID': address_id
             })
+            # except:
+            #     # If there's an error parsing the coupons, still create the order
+            #     data.append({
+            #         'OrderID': order_id,
+            #         'CustomerID': customer_id,
+            #         'RestaurantID': restaurant_id,
+            #         'OrderDate': order_date,
+            #         'TotalAmount': total_amount,
+            #         'FinalAmount' : final_amount,
+            #         'Status': status,
+            #         'PaymentMethod': payment_method,
+            #         'IsFirstOrder': is_first_order,
+            #         'RestaurantCoupons': None,
+            #         'CouponApplied': False,
+            #         'CouponCode': None,
+            #         'DiscountAmount': 0,
+            #         'CreatedDate': created_date,
+            #         'ModifiedDate': modified_date,
+            #         'AddressID': address_id
+            #     })
             
             order_id += 1
+            is_first_order = False  # Mark subsequent orders as not first orders
         #     if order_id >= order_end_id:
         #         break
                 
@@ -732,6 +826,7 @@ def generate_orders_data(order_start_id, order_end_id, customer_df, restaurant_d
     result_df = pd.DataFrame(data)
     
     return result_df
+
 
 def generate_order_items_data(order_df, menu_df):
     data = []
@@ -749,9 +844,13 @@ def generate_order_items_data(order_df, menu_df):
         restaurant_menu_map[restaurant_id].append(menu_id)
     
     # For each order, generate 1-5 order items
-    for _, order in order_df.iterrows():
+    for idx, order in order_df.iterrows():
         order_id = order['OrderID']
         restaurant_id = order['RestaurantID']
+        payment_method = order['PaymentMethod']
+        # print('Payment method' , payment_method)
+        is_first_order = order['IsFirstOrder']
+        
         
         # Get available menu items for this restaurant
         menu_ids = restaurant_menu_map.get(restaurant_id, [])
@@ -777,7 +876,13 @@ def generate_order_items_data(order_df, menu_df):
             # Calculate subtotal
             subtotal = price * quantity
             order_total += subtotal
-            ratings = np.random.choice([1,2,3,4,5], p=[0.1,0.1,0.1,0.3,0.4])
+            
+            # Generate rating (if delivered)
+            if order['Status'] == 'Delivered':
+                ratings = np.random.choice([1, 2, 3, 4, 5], p=[0.1, 0.1, 0.1, 0.3, 0.4])
+            else:
+                ratings = None
+            
             # Dates
             created_date = order['CreatedDate']
             modified_date = order['ModifiedDate']
@@ -796,15 +901,76 @@ def generate_order_items_data(order_df, menu_df):
             
             order_item_id += 1
 
-        order_df.loc[order_df['OrderID'] == order_id, 'TotalAmount'] = order_total
-
-    # Create the DataFrame
-    order_items_df = pd.DataFrame(data)
     
-    # Update the total amount in the orders DataFrame
-    # order_totals = order_items_df.groupby('OrderID')['Subtotal'].sum().reset_index()
+        # Now that we know the total order amount, we can apply coupons
+        final_amount = order_total  # Default to original amount
+        coupon_applied = False
+        coupon_code = None
+        discount_amount = 0
+        
+        # Check if there are available coupons
+        if 'RestaurantCoupons' in order_df.columns and order['RestaurantCoupons'] is not None:
+            try:
+                restaurant_coupons = json.loads(order['RestaurantCoupons'])
+                eligible_coupons = []
+                
+                # Find eligible coupons based on:
+                # 1. Order amount meets minimum
+                # 2. Payment method matches (if payment-specific)
+                # 3. First order status (if first-order coupon)
+                for coupon in restaurant_coupons:
+                    # Skip if the order amount doesn't meet the minimum
+                    if order_total < coupon['min_amount']:
+                        continue
+                    
+                    # Skip if it's a payment-specific coupon and payment method doesn't match
+                    if coupon['payment_method'] is not None and coupon['payment_method'] != payment_method:
+                        continue
+                    
+                    # Skip if it's a first-order coupon but this isn't the first order
+                    if 'FIRSTORDER' in coupon['code'] and not is_first_order:
+                        continue
+                    
+                    # Add to eligible coupons
+                    eligible_coupons.append(coupon)
+                
+                # Apply the best coupon (most discount)
+                if eligible_coupons:
+                    # Sort by discount amount, highest first
+                    eligible_coupons.sort(key=lambda x: x['discount_amount'], reverse=True)
+                    best_coupon = eligible_coupons[0]
+                    
+                    coupon_code = best_coupon['code']
+                    discount_amount = best_coupon['discount_amount']
+                    final_amount = max(0, order_total - discount_amount)
+                    coupon_applied = True
+                    
+                    # Update the order with the coupon information
+                    order_df.loc[order_df['OrderID'] == order_id, 'TotalAmount'] = order_total
+                    order_df.loc[order_df['OrderID'] == order_id, 'CouponApplied'] = coupon_applied
+                    order_df.loc[order_df['OrderID'] == order_id, 'CouponCode'] = coupon_code
+                    order_df.loc[order_df['OrderID'] == order_id, 'DiscountAmount'] = discount_amount
+                    order_df.loc[order_df['OrderID'] == order_id, 'FinalAmount'] = final_amount
 
-    return order_items_df
+                    # order_df.at[idx, 'CouponApplied'] = coupon_applied
+                    # order_df.at[idx, 'CouponCode'] = coupon_code
+                    # order_df.at[idx, 'DiscountAmount'] = discount_amount
+                    # order_df.at[idx, 'TotalAmount'] = final_amount
+                else:
+                    # No eligible coupons, update order with the original amount
+                    # order_df.at[idx, 'TotalAmount'] = order_total
+                    order_df.loc[order_df['OrderID'] == order_id, 'TotalAmount'] = order_total
+                    order_df.loc[order_df['OrderID'] == order_id, 'FinalAmount'] = final_amount
+            except Exception as e:
+                # If there's an error applying coupons, just use the original amount
+                order_df.loc[order_df['OrderID'] == order_id, 'TotalAmount'] = order_total
+                order_df.loc[order_df['OrderID'] == order_id, 'FinalAmount'] = final_amount
+        else:
+            # No coupons available, update with the original amount
+           order_df.loc[order_df['OrderID'] == order_id, 'TotalAmount'] = order_total
+           order_df.loc[order_df['OrderID'] == order_id, 'FinalAmount'] = final_amount
+    
+    return pd.DataFrame(data)
 
 
 def generate_delivery_data(order_df, delivery_agent_df, delivery_start_id,restaurant_df):
@@ -964,6 +1130,7 @@ order_df = generate_orders_data(ORDER_START_ID, ORDER_END_ID, customer_df, resta
 # # Generate order items data
 order_items_df = generate_order_items_data(order_df, menu_df)
 # print(order_items_df.to_string())
+
 # print(order_df.to_string())
 
 # # Generate delivery data
@@ -971,6 +1138,9 @@ delivery_df = generate_delivery_data(order_df, delivery_agent_df, DELIVERY_START
 # print(delivery_df.to_string())
 
     # Remove temporary columns
+if 'RestaurantCoupons' in order_df.columns:
+    order_df = order_df.drop(columns=['RestaurantCoupons'])
+    
 if 'AddressID' in order_df.columns:
     order_df = order_df.drop(columns=['AddressID'])
 
