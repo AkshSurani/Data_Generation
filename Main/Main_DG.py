@@ -758,6 +758,7 @@ def generate_orders_data(order_start_id, order_end_id, customer_df, restaurant_d
             coupon_applied = False
             coupon_code = None
             discount_amount = 0
+            delivery_charges = 0
             restaurant_coupons = None
             try:
                 restaurant_coupons = json.loads(restaurant['Coupons'])
@@ -782,6 +783,8 @@ def generate_orders_data(order_start_id, order_end_id, customer_df, restaurant_d
                 'RestaurantID': restaurant_id,
                 'OrderDate': order_date,
                 'TotalAmount': total_amount,  # Will be updated in order_items function
+                'DiscountAmount': discount_amount,
+                'DeliveryCharges' : delivery_charges,
                 'FinalAmount' : final_amount,
                 'Status': status,
                 'PaymentMethod': payment_method,
@@ -789,7 +792,6 @@ def generate_orders_data(order_start_id, order_end_id, customer_df, restaurant_d
                 'RestaurantCoupons': restaurant['Coupons'] if restaurant_coupons != None else None,  # Store all restaurant coupons
                 'CouponApplied': coupon_applied,
                 'CouponCode': coupon_code,
-                'DiscountAmount': discount_amount,
                 'CreatedDate': created_date,
                 'ModifiedDate': modified_date,
                 'AddressID': address_id
@@ -907,7 +909,17 @@ def generate_order_items_data(order_df, menu_df):
         coupon_applied = False
         coupon_code = None
         discount_amount = 0
-        
+        delivery_charges = 0
+
+        if order_total < 199:
+            delivery_charges = random.randint(80,100)
+        elif order_total >= 200 and order_total < 399 :
+            delivery_charges = random.randint(50,80)
+        elif order_total >= 400 and order_total < 599 :
+            delivery_charges = random.randint(30, 50)
+        else :
+            delivery_charges = 0
+
         # Check if there are available coupons
         if 'RestaurantCoupons' in order_df.columns and order['RestaurantCoupons'] is not None:
             try:
@@ -950,25 +962,26 @@ def generate_order_items_data(order_df, menu_df):
                     order_df.loc[order_df['OrderID'] == order_id, 'CouponApplied'] = coupon_applied
                     order_df.loc[order_df['OrderID'] == order_id, 'CouponCode'] = coupon_code
                     order_df.loc[order_df['OrderID'] == order_id, 'DiscountAmount'] = discount_amount
-                    order_df.loc[order_df['OrderID'] == order_id, 'FinalAmount'] = final_amount
+                    
+                    order_df.loc[order_df['OrderID'] == order_id,'DeliveryCharges'] = delivery_charges
+                    order_df.loc[order_df['OrderID'] == order_id, 'FinalAmount'] = final_amount + delivery_charges
 
-                    # order_df.at[idx, 'CouponApplied'] = coupon_applied
-                    # order_df.at[idx, 'CouponCode'] = coupon_code
-                    # order_df.at[idx, 'DiscountAmount'] = discount_amount
-                    # order_df.at[idx, 'TotalAmount'] = final_amount
                 else:
                     # No eligible coupons, update order with the original amount
                     # order_df.at[idx, 'TotalAmount'] = order_total
                     order_df.loc[order_df['OrderID'] == order_id, 'TotalAmount'] = order_total
-                    order_df.loc[order_df['OrderID'] == order_id, 'FinalAmount'] = final_amount
+                    order_df.loc[order_df['OrderID'] == order_id,'DeliveryCharges'] = delivery_charges
+                    order_df.loc[order_df['OrderID'] == order_id, 'FinalAmount'] = final_amount + delivery_charges
             except Exception as e:
                 # If there's an error applying coupons, just use the original amount
                 order_df.loc[order_df['OrderID'] == order_id, 'TotalAmount'] = order_total
-                order_df.loc[order_df['OrderID'] == order_id, 'FinalAmount'] = final_amount
+                order_df.loc[order_df['OrderID'] == order_id,'DeliveryCharges'] = delivery_charges
+                order_df.loc[order_df['OrderID'] == order_id, 'FinalAmount'] = final_amount + delivery_charges
         else:
             # No coupons available, update with the original amount
            order_df.loc[order_df['OrderID'] == order_id, 'TotalAmount'] = order_total
-           order_df.loc[order_df['OrderID'] == order_id, 'FinalAmount'] = final_amount
+           order_df.loc[order_df['OrderID'] == order_id,'DeliveryCharges'] = delivery_charges
+           order_df.loc[order_df['OrderID'] == order_id, 'FinalAmount'] = final_amount + delivery_charges
     
     return pd.DataFrame(data)
 
@@ -1143,6 +1156,9 @@ if 'RestaurantCoupons' in order_df.columns:
     
 if 'AddressID' in order_df.columns:
     order_df = order_df.drop(columns=['AddressID'])
+
+if 'CouponApplied' in order_df.columns:
+    order_df = order_df.drop(columns=['CouponApplied'])
 
 if 'LocationID' in address_df.columns:
     address_df =  address_df.drop(columns=['LocationID'])
