@@ -2,9 +2,8 @@ import pandas as pd
 import numpy as np
 from faker import Faker
 import random
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta
 import json
-import uuid
 import os
 
 # Set random seed for reproducibility
@@ -18,8 +17,6 @@ fake = Faker('en_IN')  # Using Indian locale
 if not os.path.exists('data'):
     os.makedirs('data')
 
-# Define number of records to generate
-# num_records = 100
 
 ## LOCATIONS
 NUM_LOCATIONS = 50  # Number of locations
@@ -258,64 +255,6 @@ def generate_restaurant_data(restaurant_start_id, restaurant_end_id, location_df
         # if restaurant_id >= restaurant_end_id:
         #     break
     
-    # If we still have room for more restaurants, continue adding them to random locations
-    # while restaurant_id < restaurant_end_id:
-    #     location_id = random.choice(active_locations['LocationID'])
-    #     city_name = active_locations[active_locations['LocationID'] == location_id]['City'].values[0]
-        
-    #     # Generate restaurant name
-    #     name = f"{random.choice(first_parts)} {random.choice(second_parts)}"
-        
-    #     # Generate cuisine types
-    #     num_cuisines = random.randint(1, 3)
-    #     restaurant_cuisines = random.sample(cuisine_types, num_cuisines)
-    #     cuisine_type = ", ".join(restaurant_cuisines)
-        
-    #     # Other fields
-    #     pricing_for_2 = random.randint(200, 2000)
-    #     phone = f"9{random.randint(100000000, 999999999)}"
-        
-    #     # Operating hours
-    #     opening_hour = random.randint(7, 12)
-    #     closing_hour = random.randint(17, 23)
-    #     operating_hours = f"{opening_hour}:00 AM - {closing_hour}:00 PM"
-        
-    #     active_flag = np.random.choice([True, False], p=[0.9, 0.1])
-    #     open_status = 'Open' if active_flag == True else 'Closed'
-
-    #     # Address
-    #     locality = f"{fake.street_name()}"
-    #     city_pincode = active_locations[active_locations['LocationID'] == location_id]['PinCode'].values[0]
-    #     restaurant_address = f'{random.choice(["Ground Floor,","First Floor,","Second Floor,","Third Floor,", ""])} {locality}, {city_name} - {city_pincode}'
-        
-    #     # Coordinates
-    #     latitude = random.uniform(8.4, 37.6)
-    #     longitude = random.uniform(68.7, 97.25)
-        
-    #     # Dates
-    #     created_date = fake.date_time_between(start_date='-3y', end_date='-1y')
-    #     modified_date = fake.date_time_between(start_date=created_date, end_date='now')
-        
-    #     data.append({
-    #         'RestaurantID': restaurant_id,
-    #         'Name': name,
-    #         'CuisineType': cuisine_type,
-    #         'Pricing_for_2': pricing_for_2,
-    #         'Restaurant_Phone': phone,
-    #         'OperatingHours': operating_hours,
-    #         'LocationID': location_id,
-    #         'ActiveFlag': active_flag,
-    #         'OpenStatus': open_status,
-    #         'Locality': locality,
-    #         'Restaurant_Address': restaurant_address,
-    #         'Latitude': latitude,
-    #         'Longitude': longitude,
-    #         'CreatedDate': created_date,
-    #         'ModifiedDate': modified_date
-    #     })
-        
-    #     restaurant_id += 1
-    
     return pd.DataFrame(data)
 
 
@@ -537,9 +476,6 @@ def generate_customer_address_data(customer_address_start_id, customer_address_e
     
     result_df = pd.DataFrame(data)
     
-    # Remove the temporary LocationID column before returning
-    # if 'LocationID' in result_df.columns:
-    #     return result_df.drop(columns=['LocationID'])
     return result_df
 
 
@@ -644,44 +580,6 @@ def generate_delivery_agent_data(delivery_agents_start_id, delivery_agent_end_id
         # if delivery_agent_id >= delivery_agent_end_id:
         #     break
     
-    # If needed, add more agents to random locations
-    # while delivery_agent_id < delivery_agent_end_id:
-    #     location_id = random.choice(active_locations['LocationID'])
-        
-    #     gender = np.random.choice(['Male', 'Female', 'Other'], p=[0.9, 0.09, 0.01])
-    #     if gender == 'Male':
-    #         name = fake.name_male()
-    #     elif gender == 'Female':
-    #         name = fake.name_female()
-    #     else:
-    #         name = fake.name()
-            
-    #     phone = f"{random.randint(7000000000, 9999999999)}"
-    #     vehicle_type = random.choice(vehicle_types)
-    #     status = np.random.choice(['Active', 'Inactive'], p=[0.9, 0.1])
-        
-    #     # Rating (1.0 to 5.0)
-    #     rating = round(random.uniform(3.0, 5.0), 1)
-        
-    #     # Dates
-    #     created_date = fake.date_time_between(start_date='-2y', end_date='-3m')
-    #     modified_date = fake.date_time_between(start_date=created_date, end_date='now')
-        
-    #     data.append({
-    #         'DeliveryAgentID': delivery_agent_id,
-    #         'Name': name,
-    #         'Phone': phone,
-    #         'VehicleType': vehicle_type,
-    #         'LocationID': location_id,
-    #         'Status': status,
-    #         'Gender': gender,
-    #         'Rating': rating,
-    #         'CreatedDate': created_date,
-    #         'ModifiedDate': modified_date
-    #     })
-        
-    #     delivery_agent_id += 1
-    
     return pd.DataFrame(data)
 
 
@@ -771,12 +669,6 @@ def generate_orders_data(order_start_id, order_end_id, customer_df, restaurant_d
             else:
                 restaurant_coupons = None
                    
-            # restaurant_coupons = np.random.choice([restaurant_coupons, None], p=[0.7, 0.3])            
-            # try:
-            #     restaurant_coupons = json.loads(restaurant['Coupons'])
-            #     # We'll store the coupon information but apply it later in the order_items function
-            #     # Store payment method with the order to check for payment-specific coupons later
-                
             data.append({
                 'OrderID': order_id,
                 'CustomerID': customer_id,
@@ -796,26 +688,6 @@ def generate_orders_data(order_start_id, order_end_id, customer_df, restaurant_d
                 'ModifiedDate': modified_date,
                 'AddressID': address_id
             })
-            # except:
-            #     # If there's an error parsing the coupons, still create the order
-            #     data.append({
-            #         'OrderID': order_id,
-            #         'CustomerID': customer_id,
-            #         'RestaurantID': restaurant_id,
-            #         'OrderDate': order_date,
-            #         'TotalAmount': total_amount,
-            #         'FinalAmount' : final_amount,
-            #         'Status': status,
-            #         'PaymentMethod': payment_method,
-            #         'IsFirstOrder': is_first_order,
-            #         'RestaurantCoupons': None,
-            #         'CouponApplied': False,
-            #         'CouponCode': None,
-            #         'DiscountAmount': 0,
-            #         'CreatedDate': created_date,
-            #         'ModifiedDate': modified_date,
-            #         'AddressID': address_id
-            #     })
             
             order_id += 1
             is_first_order = False  # Mark subsequent orders as not first orders
@@ -1065,37 +937,19 @@ def generate_delivery_data(order_df, delivery_agent_df, delivery_start_id,restau
     
     return pd.DataFrame(data)
 
+
 def update_menu_item_ratings(order_items_df,menu_df):
     for _,items in menu_df.iterrows():
         menu_id = items['MenuItemID']
         avg_of_menu_item_ratings = order_items_df[order_items_df['MenuItemID'] == menu_id]['Ratings'].agg('mean')
-        # items['Ratings'] = avg_of_menu_item_ratings
         menu_df.loc[menu_df['MenuItemID'] == menu_id,'Ratings'] = round(avg_of_menu_item_ratings,1)
+
 
 def update_restaurant_ratings(menu_df,restaurant_df):
     for _,restaurant in restaurant_df.iterrows():
         restaurant_id = restaurant['RestaurantID']
         avg_of_restaurant_ratings = menu_df[menu_df['RestaurantID'] == restaurant_id]['Ratings'].agg('mean')
         restaurant_df.loc[restaurant_df['RestaurantID'] == restaurant_id, 'Ratings'] = round(avg_of_restaurant_ratings,1)
-        # restaurant['Ratings'] = avg_of_restaurant_ratings
-        
-# def update_order_totals(order_df, order_totals):
-#     # Create a dictionary for faster lookups
-#     total_dict = dict(zip(order_totals['OrderID'], order_totals['Subtotal']))
-    
-#     # Update the orders DataFrame
-#     for i, row in order_df.iterrows():
-#         order_id = row['OrderID']
-#         if order_id in total_dict:
-#             order_df.at[i, 'TotalAmount'] = total_dict[order_id]
-    
-#     return order_df
-
-
-# Main execution section
-# if __name__ == "__main__":
-# Generate location data
-# print("Generating location data...")
 
 
 
@@ -1108,7 +962,7 @@ def update_restaurant_ratings(menu_df,restaurant_df):
 # login_audit_df = pd.read_csv('data/login_audit.csv')
 # delivery_agent_df = pd.read_csv('data/delivery_agent.csv')
 
-
+# # Generate location data
 location_df = generate_location_data(LOCATION_START_ID, LOCATION_END_ID)
 # print(location_df.to_string())
 
@@ -1122,7 +976,7 @@ menu_df = generate_menu_data(MENU_START_ID, MENU_END_ID, restaurant_df)
 
 # # Generate customer data
 customer_df = generate_customer_data(CUSTOMER_START_ID, CUSTOMER_END_ID)
-# print(customer_df)
+# print(customer_df.to_string())
 
 # # Generate customer address data
 address_df = generate_customer_address_data(CUSTOMER_ADDRESS_START_ID, CUSTOMER_ADDRESS_END_ID, customer_df, location_df)
@@ -1143,12 +997,12 @@ order_df = generate_orders_data(ORDER_START_ID, ORDER_END_ID, customer_df, resta
 # # Generate order items data
 order_items_df = generate_order_items_data(order_df, menu_df)
 # print(order_items_df.to_string())
-
 # print(order_df.to_string())
 
 # # Generate delivery data
 delivery_df = generate_delivery_data(order_df, delivery_agent_df, DELIVERY_START_ID,restaurant_df)
 # print(delivery_df.to_string())
+
 
     # Remove temporary columns
 if 'RestaurantCoupons' in order_df.columns:
