@@ -405,7 +405,7 @@ def generate_customer_data(customer_start_id, customer_end_id):
     data = []
     for i in range(customer_start_id, customer_end_id):
         # Basic info
-        gender = random.choice(genders)
+        gender = np.random.choice(genders , p=[0.49,0.48,0.03])
         if gender == 'Male':
             name = fake.name_male()
         elif gender == 'Female':
@@ -974,7 +974,7 @@ def generate_order_items_data(order_df, menu_df):
 
 
 def generate_delivery_data(order_df, delivery_agent_df, delivery_start_id,restaurant_df):
-    delivery_statuses = ['Delivered', 'In Transit', 'Assigned', 'Failed']
+    # delivery_statuses = ['Delivered', 'In Transit', 'Assigned', 'Failed']
     
     data = []
     delivery_id = delivery_start_id
@@ -1087,40 +1087,40 @@ def update_restaurant_ratings(menu_df,restaurant_df):
 
 
 ## Reading all files already generated
-location_df = pd.read_csv('data/location.csv')
-restaurant_df = pd.read_csv('data/restaurant.csv')
-menu_df = pd.read_csv('data/menu_items.csv') ## menu_items.csv
-customer_df = pd.read_csv('data/customer.csv')
-address_df = pd.read_csv('data/customer_address.csv')
-login_audit_df = pd.read_csv('data/login_audit.csv')
-delivery_agent_df = pd.read_csv('data/delivery_agent.csv')
+# location_df = pd.read_csv('data/location.csv')
+# restaurant_df = pd.read_csv('data/restaurant.csv')
+# menu_df = pd.read_csv('data/menu_items.csv') ## menu_items.csv
+# customer_df = pd.read_csv('data/customer.csv')
+# address_df = pd.read_csv('data/customer_address.csv')
+# login_audit_df = pd.read_csv('data/login_audit.csv')
+# delivery_agent_df = pd.read_csv('data/delivery_agent.csv')
 
 
-# location_df = generate_location_data(LOCATION_START_ID, LOCATION_END_ID)
+location_df = generate_location_data(LOCATION_START_ID, LOCATION_END_ID)
 # print(location_df.to_string())
 
 # # Generate restaurant data
-# restaurant_df = generate_restaurant_data(RESTAURANT_START_ID, RESTAURANT_END_ID, location_df)
+restaurant_df = generate_restaurant_data(RESTAURANT_START_ID, RESTAURANT_END_ID, location_df)
 # print(restaurant_df.to_string())
 
 # # Generate menu data
-# menu_df = generate_menu_data(MENU_START_ID, MENU_END_ID, restaurant_df)
+menu_df = generate_menu_data(MENU_START_ID, MENU_END_ID, restaurant_df)
 # print(menu_df.to_string())
 
 # # Generate customer data
-# customer_df = generate_customer_data(CUSTOMER_START_ID, CUSTOMER_END_ID)
+customer_df = generate_customer_data(CUSTOMER_START_ID, CUSTOMER_END_ID)
 # print(customer_df)
 
 # # Generate customer address data
-# address_df = generate_customer_address_data(CUSTOMER_ADDRESS_START_ID, CUSTOMER_ADDRESS_END_ID, customer_df, location_df)
+address_df = generate_customer_address_data(CUSTOMER_ADDRESS_START_ID, CUSTOMER_ADDRESS_END_ID, customer_df, location_df)
 # print(address_df.to_string())
 
 # # Generate login audit data
-# login_audit_df = generate_login_audit_data(CUSTOMER_LOGIN_AUDIT_START_ID, CUSTOMER_LOGIN_AUDIT_END_ID, customer_df)
+login_audit_df = generate_login_audit_data(CUSTOMER_LOGIN_AUDIT_START_ID, CUSTOMER_LOGIN_AUDIT_END_ID, customer_df)
 # print(login_audit_df.to_string())
 
 # # Generate delivery agent data
-# delivery_agent_df = generate_delivery_agent_data(DELIVERY_AGENT_START_ID, DELIVERY_AGENT_END_ID, location_df)
+delivery_agent_df = generate_delivery_agent_data(DELIVERY_AGENT_START_ID, DELIVERY_AGENT_END_ID, location_df)
 # print(delivery_agent_df.to_string())
 
 # # Generate orders data
@@ -1152,10 +1152,10 @@ update_menu_item_ratings(order_items_df,menu_df)
 update_restaurant_ratings(menu_df,restaurant_df)    
 
 
-# location_df.to_csv('data/location.csv',index=False)
-# customer_df.to_csv('data/customer.csv', index=False)
-# address_df.to_csv('data/customer_address.csv', index=False)
-# delivery_agent_df.to_csv('data/delivery_agent.csv', index=False)
+location_df.to_csv('data/location.csv',index=False)
+customer_df.to_csv('data/customer.csv', index=False)
+address_df.to_csv('data/customer_address.csv', index=False)
+delivery_agent_df.to_csv('data/delivery_agent.csv', index=False)
 
 restaurant_df.to_csv('data/restaurant.csv', index=False)
 menu_df.to_csv('data/menu_items.csv', index=False)
