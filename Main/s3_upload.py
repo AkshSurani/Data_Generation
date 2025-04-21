@@ -15,9 +15,8 @@ day = today.day
 month = today.month
 year = today.year
 
-folder_name = 'data1'
-file_names = ['customer_address','customer','delivery_agent','delivery','location',
-              'login_audit','menu_items','order_items','orders','restaurant']
+folder_name = 'data2'
+file_names = ['customer_address','customer']
 
 bucket_name = f'{my_secrets['AWS_S3_BUCKET_NAME']}'
 

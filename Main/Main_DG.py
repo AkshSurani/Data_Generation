@@ -52,10 +52,15 @@ CUSTOMER_LOGIN_AUDIT_END_ID = CUSTOMER_LOGIN_AUDIT_START_ID + NUM_CUSTOMER_LOGIN
 
 ## ORDERS
 NUM_ORDERS = 100  # Number of orders
-ORDER_START_ID = 1
+ORDER_START_ID = 37184
 ORDER_END_ID = ORDER_START_ID + NUM_ORDERS
 
-DELIVERY_START_ID = 1
+## ORDERS
+NUM_ORDERS_ITEMS = 100  # Number of orders
+ORDER_ITEMS_START_ID = 106823
+ORDER_ITEMS_END_ID = ORDER_ITEMS_START_ID + NUM_ORDERS_ITEMS
+
+DELIVERY_START_ID = 32800
 
 ## DELIVERY AGENTS - Distributed across locations
 NUM_DELIVERY_AGENT = 150
@@ -895,9 +900,9 @@ def generate_orders_data(order_start_id, order_end_id, customer_df, restaurant_d
     return result_df
 
 
-def generate_order_items_data(order_df, menu_df):
+def generate_order_items_data(order_items_start_id,order_df, menu_df):
     data = []
-    order_item_id = 1
+    order_item_id = order_items_start_id
     
     # Get the mapping of restaurant to their menu items
     restaurant_menu_map = {}
@@ -1164,56 +1169,59 @@ def update_restaurant_ratings(menu_df,restaurant_df):
 
 
 ## Reading all files already generated
-# location_df = pd.read_csv('data1/location.csv')
-# restaurant_df = pd.read_csv('data1/restaurant.csv')
-# menu_df = pd.read_csv('data1/menu_items.csv') ## menu_items.csv
-# customer_df = pd.read_csv('data/customer.csv')
-# address_df = pd.read_csv('data/customer_address.csv')
+location_df = pd.read_csv('data1/location.csv')
+restaurant_df = pd.read_csv('data1/restaurant.csv')
+restaurant_df = restaurant_df.sample(20) # to update some restaunrants
+menu_df = pd.read_csv('data1/menu_items.csv') ## menu_items.csv
+menu_df = menu_df[menu_df['RestaurantID'].isin(restaurant_df['RestaurantID'])] # to update some menu items
+
+customer_df = pd.read_csv('data1/customer.csv')
+address_df = pd.read_csv('data1/customer_address.csv')
 # login_audit_df = pd.read_csv('data1/login_audit.csv')
-# delivery_agent_df = pd.read_csv('data1/delivery_agent.csv')
+delivery_agent_df = pd.read_csv('data1/delivery_agent.csv')
 # order_df = pd.read_csv('data1/orders.csv')
 
-# # Generate location data
-location_df = generate_location_data(LOCATION_START_ID, LOCATION_END_ID)
-# print(location_df.to_string())
+# # # Generate location data
+# location_df = generate_location_data(LOCATION_START_ID, LOCATION_END_ID)
+# # print(location_df.to_string())
 
-# # Generate restaurant data
-restaurant_df = generate_restaurant_data(RESTAURANT_START_ID, RESTAURANT_END_ID, location_df)
-# print(restaurant_df.to_string())
+# # # Generate restaurant data
+# restaurant_df = generate_restaurant_data(RESTAURANT_START_ID, RESTAURANT_END_ID, location_df)
+# # print(restaurant_df.to_string())
 
-# # Generate menu data
-menu_df = generate_menu_data(MENU_START_ID, MENU_END_ID, restaurant_df)
-# print(menu_df.to_string())
+# # # Generate menu data
+# menu_df = generate_menu_data(MENU_START_ID, MENU_END_ID, restaurant_df)
+# # print(menu_df.to_string())
 
-# # # Generate customer data
-customer_df = generate_customer_data(CUSTOMER_START_ID, CUSTOMER_END_ID)
-# # print(customer_df.to_string())
+# # # # Generate customer data
+# customer_df = generate_customer_data(CUSTOMER_START_ID, CUSTOMER_END_ID)
+# # # print(customer_df.to_string())
 
-# # # Generate customer address data
-address_df = generate_customer_address_data(CUSTOMER_ADDRESS_START_ID, CUSTOMER_ADDRESS_END_ID, customer_df, location_df)
-# # print(address_df.to_string())
+# # # # Generate customer address data
+# address_df = generate_customer_address_data(CUSTOMER_ADDRESS_START_ID, CUSTOMER_ADDRESS_END_ID, customer_df, location_df)
+# # # print(address_df.to_string())
 
-# # # Generate login audit data
-login_audit_df = generate_login_audit_data(CUSTOMER_LOGIN_AUDIT_START_ID, CUSTOMER_LOGIN_AUDIT_END_ID, customer_df)
-# # print(login_audit_df.to_string())
+# # # # Generate login audit data
+# login_audit_df = generate_login_audit_data(CUSTOMER_LOGIN_AUDIT_START_ID, CUSTOMER_LOGIN_AUDIT_END_ID, customer_df)
+# # # print(login_audit_df.to_string())
 
-# # # Generate delivery agent data
-delivery_agent_df = generate_delivery_agent_data(DELIVERY_AGENT_START_ID, DELIVERY_AGENT_END_ID, location_df)
-# print(delivery_agent_df.to_string())
+# # # # Generate delivery agent data
+# delivery_agent_df = generate_delivery_agent_data(DELIVERY_AGENT_START_ID, DELIVERY_AGENT_END_ID, location_df)
+# # print(delivery_agent_df.to_string())
 
-# # Generate orders data
+# # # Generate orders data
 order_df = generate_orders_data(ORDER_START_ID, ORDER_END_ID, customer_df, restaurant_df, address_df, location_df)
 # print(order_df.to_string())
 
-# # # Generate order items data
-order_items_df = generate_order_items_data(order_df, menu_df)
+# # # # Generate order items data
+order_items_df = generate_order_items_data(ORDER_ITEMS_START_ID,order_df, menu_df)
 order_df = order_df[(order_df['TotalAmount'] != 0)]
 # print(order_items_df.to_string())
 # print(order_df.to_string())
 
-# # # Generate delivery data
+# # # # Generate delivery data
 delivery_df = generate_delivery_data(order_df, delivery_agent_df, DELIVERY_START_ID,restaurant_df)
-# print(delivery_df.to_string())
+# # print(delivery_df.to_string())
 
 
     # Remove temporary columns
@@ -1234,13 +1242,19 @@ update_menu_item_ratings(order_items_df,menu_df)
 update_restaurant_ratings(menu_df,restaurant_df)    
 
 
-location_df.to_csv('data1/location.csv',index=False)
-customer_df.to_csv('data1/customer.csv', index=False)
-address_df.to_csv('data1/customer_address.csv', index=False)
-delivery_agent_df.to_csv('data1/delivery_agent.csv', index=False)
-restaurant_df.to_csv('data1/restaurant.csv', index=False)
-menu_df.to_csv('data1/menu_items.csv', index=False)
-login_audit_df.to_csv('data1/login_audit.csv', index=False)
-order_df.to_csv('data1/orders.csv', index=False)
-order_items_df.to_csv('data1/order_items.csv', index=False)
-delivery_df.to_csv('data1/delivery.csv', index=False)
+# location_df.to_csv('data1/location.csv',index=False)
+# customer_df.to_csv('data1/customer.csv', index=False)
+# address_df.to_csv('data1/customer_address.csv', index=False)
+# delivery_agent_df.to_csv('data1/delivery_agent.csv', index=False)
+# restaurant_df.to_csv('data1/restaurant.csv', index=False)
+# menu_df.to_csv('data1/menu_items.csv', index=False)
+# login_audit_df.to_csv('data1/login_audit.csv', index=False)
+# order_df.to_csv('data1/orders.csv', index=False)
+# order_items_df.to_csv('data1/order_items.csv', index=False)
+# delivery_df.to_csv('data1/delivery.csv', index=False)
+
+restaurant_df.to_csv('data2/restaurant.csv', index=False)
+menu_df.to_csv('data2/menu_items.csv', index=False)
+order_df.to_csv('data2/orders.csv', index=False)
+order_items_df.to_csv('data2/order_items.csv', index=False)
+delivery_df.to_csv('data2/delivery.csv', index=False)
