@@ -2,9 +2,13 @@ import pandas as pd
 import numpy as np
 from faker import Faker
 import random
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 import json
 import os
+
+
+start_time = datetime.now()
+print(f"Program started at: {start_time}")
 
 # Set random seed for reproducibility
 np.random.seed(42)
@@ -13,12 +17,15 @@ random.seed(42)
 # Initialize Faker
 fake = Faker('en_IN')  # Using Indian locale
 
-# Create output directory if it doesn't exist
-if not os.path.exists('data'):
-    os.makedirs('data')
 
 if not os.path.exists('data1'):
     os.makedirs('data1')
+    
+if not os.path.exists('data2'):
+    os.makedirs('data2')
+
+if not os.path.exists('data3'):
+    os.makedirs('data3')
 
 ## LOCATIONS
 NUM_LOCATIONS = 50  # Number of locations
@@ -36,12 +43,12 @@ MENU_START_ID = 1
 MENU_END_ID = MENU_START_ID + NUM_MENU
 
 ## CUSTOMERS
-NUM_CUSTOMERS = 10000  # Number of customers
+NUM_CUSTOMERS = 106009  # Number of customers
 CUSTOMER_START_ID = 1
 CUSTOMER_END_ID = CUSTOMER_START_ID + NUM_CUSTOMERS
 
 ## CUSTOMER ADDRESS - Multiple addresses per customer
-NUM_CUSTOMER_ADDRESS = NUM_CUSTOMERS * 3
+NUM_CUSTOMER_ADDRESS = NUM_CUSTOMERS * 2
 CUSTOMER_ADDRESS_START_ID = 1
 CUSTOMER_ADDRESS_END_ID = CUSTOMER_ADDRESS_START_ID + NUM_CUSTOMER_ADDRESS
 
@@ -52,15 +59,15 @@ CUSTOMER_LOGIN_AUDIT_END_ID = CUSTOMER_LOGIN_AUDIT_START_ID + NUM_CUSTOMER_LOGIN
 
 ## ORDERS
 NUM_ORDERS = 100  # Number of orders
-ORDER_START_ID = 37184
+ORDER_START_ID = 1
 ORDER_END_ID = ORDER_START_ID + NUM_ORDERS
 
 ## ORDERS
 NUM_ORDERS_ITEMS = 100  # Number of orders
-ORDER_ITEMS_START_ID = 106823
+ORDER_ITEMS_START_ID = 1
 ORDER_ITEMS_END_ID = ORDER_ITEMS_START_ID + NUM_ORDERS_ITEMS
 
-DELIVERY_START_ID = 32800
+DELIVERY_START_ID = 1
 
 ## DELIVERY AGENTS - Distributed across locations
 NUM_DELIVERY_AGENT = 150
@@ -110,7 +117,10 @@ def generate_location_data(location_start_id, location_end_id):
         ('Nadiad', 'Gujarat'),
         ('Gandhinagar', 'Gujarat'),
         ('Porbandar', 'Gujarat'),
-        ('Himatnagar', 'Gujarat')
+        ('Himatnagar', 'Gujarat'),
+        ('Kota', 'Rajasthan'),
+        ('Vijayawada', 'Andhra Pradesh'),
+        ('Hubli', 'Karnataka')
     ]
     
     data = []
@@ -151,14 +161,32 @@ def generate_restaurant_data(restaurant_start_id, restaurant_end_id, location_df
     # Restaurant names
     restaurant_names = [
         # Gujarati Restaurants
-        "Kathiyawadi Rasoi", "Surti Tadka", "Manek Chowk Bites", "Bhavnagari Zaika", "Rajkot Rasoi", "Gujarati Zaika",
-        "Vadodara Bites", "Ahmedabadi Tandoor", "Kutchhi Rasoi", "Saurashtra Flavors", "Locho Junction",
-        "Dhokla Delight", "Thepla House", "Fafda Jalebi Corner", "Undhiyu Bhavan", "Khichdi Khaas", "Gujarati Shaan",
-        "Ghar ni Rasoi", "Rotlo Rajwadi", "Kathiyawadi Dhamaka", "Desi Gujju Tadka", "Swaminarayan Bhojan",
-        "Saurashtra Kitchen", "Bhakarwadi Hub", "Farsan Street", "Ponk Treats", "Dal Dhokli Junction",
-        "Handvo Delights", "Khaman House", "Gujarati Maharaj", "Rasoi ni Mahak", "Garam Rotlo", "Rajwadi Farsan",
+        # Gujarati Restaurants
+    "Kathiyawadi Rasoi", "Surti Tadka", "Manek Chowk Bites", "Bhavnagari Zaika", "Rajkot Rasoi", "Gujarati Zaika",
+    "Vadodara Bites", "Ahmedabadi Tandoor", "Kutchhi Rasoi", "Saurashtra Flavors", "Locho Junction",
+    "Dhokla Delight", "Thepla House", "Fafda Jalebi Corner", "Undhiyu Bhavan", "Khichdi Khaas", "Gujarati Shaan",
+    "Ghar ni Rasoi", "Rotlo Rajwadi", "Kathiyawadi Dhamaka", "Desi Gujju Tadka", "Swaminarayan Bhojan",
+    "Saurashtra Kitchen", "Bhakarwadi Hub", "Farsan Street", "Ponk Treats", "Dal Dhokli Junction",
+    "Handvo Delights", "Khaman House", "Gujarati Maharaj", "Rasoi ni Mahak", "Garam Rotlo", "Rajwadi Farsan",
+    "Kathiyawadi Rasoi Express", "Surti Tadka Express", "Manek Chowk Bites Express", "Bhavnagari Zaika Express",
+    "Rajkot Rasoi Express", "Gujarati Zaika Express", "Vadodara Bites Express", "Ahmedabadi Tandoor Express",
+    "Kutchhi Rasoi Express", "Saurashtra Flavors Express", "Locho Junction Express", "Dhokla Delight Express",
+    "Thepla House Express", "Fafda Jalebi Corner Express", "Undhiyu Bhavan Express", "Khichdi Khaas Express",
+    "Gujarati Shaan Express", "Ghar ni Rasoi Express", "Rotlo Rajwadi Express", "Kathiyawadi Dhamaka Express",
+    "Desi Gujju Tadka Express", "Swaminarayan Bhojan Express", "Saurashtra Kitchen Express", "Bhakarwadi Hub Express",
+    "Farsan Street Express", "Ponk Treats Express", "Dal Dhokli Junction Express", "Handvo Delights Express",
+    "Khaman House Express", "Gujarati Maharaj Express", "Rasoi ni Mahak Express", "Garam Rotlo Express",
+    "Rajwadi Farsan Express", "Kathiyawadi Rasoi Bhavan", "Surti Tadka Zaika", "Manek Chowk Dhamaka",
+    "Bhavnagari Rasoi", "Rajkot Tandoor", "Gujarati Tandoor", "Vadodara Kitchen", "Ahmedabadi Zaika",
+    "Kutchhi Flavors", "Saurashtra Rasoi", "Locho Tadka", "Dhokla Tandoor", "Thepla Delight", "Fafda House",
+    "Undhiyu Tadka", "Khichdi Junction", "Gujarati Delight", "Ghar ni Thali", "Rotlo Tadka", "Kathiyawadi Thali",
+    "Desi Gujju Express", "Swaminarayan Kitchen", "Saurashtra Express", "Bhakarwadi Delight", "Farsan Express",
+    "Ponk Zaika", "Dal Dhokli Bhavan", "Handvo Rasoi", "Khaman Delight", "Gujarati Maharaj Bhavan",
+    "Rasoi ni Rasmalai", "Garam Thali", "Rajwadi Delight",
     
         # Maharashtrian Restaurants
+  
+        
         "Puneri Misal", "Kolhapuri Tadka", "Mumbai Pav Bhaji", "Shivneri Bhojanalay", "Solapuri Chaska",
         "Thalipeeth House", "Khandeshi Spice", "Malvani Coastal Kitchen", "Vada Pav Express", "Nagpuri Saoji Rasoi",
         "Peshwai Bhojan", "Puran Poli Junction", "Kokan King", "Shahi Misal", "Maharashtra Bhavan", "Bambaiya Zaika",
@@ -166,7 +194,18 @@ def generate_restaurant_data(restaurant_start_id, restaurant_end_id, location_df
         "Maharashtrian Feast", "Modak Magic", "Pitla Bhakri House", "Sabudana House", "Bombay Thali",
         "Bajri Bhakri Tadka", "Ganpati Bhojan", "Saswad Special Thali", "Shree Krishna Misal", "Bhaat Ghar",
         "Sahyadri Delights", "Deccan Spice", "Kokan Rasoi", "Shiv Bhojanam", "Kolhapuri Kitchen",
-    
+        "Puneri Misal Express", "Kolhapuri Tadka Junction", "Mumbai Pav Bhaji Bhavan", "Shivneri Bhojanalay Tadka",
+        "Solapuri Chaska Rasoi", "Thalipeeth House House", "Khandeshi Spice Delight", "Malvani Coastal Kitchen Spot",
+        "Vada Pav Express Treats", "Nagpuri Saoji Rasoi Café", "Peshwai Bhojan Express", "Puran Poli Junction Junction",
+        "Kokan King Bhavan", "Shahi Misal Tadka", "Maharashtra Bhavan Rasoi", "Bambaiya Zaika House",
+        "Wada Pav Junction Delight", "Zunka Bhakar Thali Spot", "Koliwada Seafood Treats", "Aamras Thali Café",
+        "Nagpuri Saoji Express", "Maharashtrian Feast Junction", "Modak Magic Bhavan", "Pitla Bhakri House Tadka",
+        "Sabudana House Rasoi", "Bombay Thali House", "Bajri Bhakri Tadka Delight", "Ganpati Bhojan Spot",
+        "Saswad Special Thali Treats", "Shree Krishna Misal Café", "Bhaat Ghar Express", "Sahyadri Delights Junction",
+        "Deccan Spice Bhavan", "Kokan Rasoi Tadka", "Shiv Bhojanam Rasoi", "Kolhapuri Kitchen House",
+        "Puneri Misal Express Delight", "Kolhapuri Tadka Junction Treats", "Mumbai Pav Bhaji Bhavan Café",
+        "Shivneri Bhojanalay Tadka Spot", "Solapuri Chaska Rasoi Treats", "Thalipeeth House House Delight",
+        
         # South Indian Restaurants
         "Madras Tiffin", "Keralam Flavors", "Chettinad Curry House", "Andhra Spice", "Dosa Junction", "Idli Dosa Corner",
         "Malabar Magic", "Coconut Grove", "Udupi Sagar", "Filter Coffee House", "Rasam Rasoi", "Karnataka Bites",
@@ -174,7 +213,10 @@ def generate_restaurant_data(restaurant_start_id, restaurant_end_id, location_df
         "Sambar Spice", "Appam & Stew", "Hyderabadi Biryani House", "Andhra Bhojan", "Pongal Place", "Vada Rasoi",
         "Ragi Roti House", "Chennai Café", "Kerala Sadhya", "Mysore Spice", "Bisi Bele Bhat Junction",
         "Payasam & More", "Pesarattu Palace", "Coconut Curry House", "Tamarind Treats", "Namma Ooru Kitchen",
-    
+        "Curry Leaf Café", "Udupi Bhavan", "Idli Express", "Steamy South", "Dakshin Zaika", "Thayir Saadham Spot",
+        "Dosai Delight", "South Spice Hub", "Sambhar & Rice", "Kerala Express", "Idli & More", "South Thali Café",
+        "Dosa Factory", "South Bites", "The Idli House", "Biryani Bhojanam", "Dravidian Delight", "Café Andhra",
+
         # North Indian Restaurants
         "Tandoori Junction", "Biryani Mahal", "Shahi Rasoi", "Dal Makhani Dhaba", "Mughlai Feast", "Butter Naan Bhavan",
         "Lajawab Tikka House", "Haveli Zaika", "Punjabi Rasoi", "Dilli Darbar", "Kebabs & Curries", "Rajputana Kitchen",
@@ -182,7 +224,11 @@ def generate_restaurant_data(restaurant_start_id, restaurant_end_id, location_df
         "Pind Da Swag", "Dilli Ka Tandoor", "Shahi Mughlai", "Zayka Darbar", "Grand Biryani Hub", "Rajwada Rasoi",
         "Paratha Junction", "North Indian Delights", "Bhature Chole Point", "Tandoor Mahal", "Peshawari Kitchen",
         "Biryani & Kebabs", "Pind Bhatura House", "Dum Biryani Express", "Makhni Curry House", "Royal Spice Kitchen",
-    
+        "Mughal Zaika", "Amritsar Thali", "Punjabi Thali House", "Zamindar Bhojan", "Delhi Belly Express",
+        "Tandoori Tadka", "Awadhi Aroma", "Pind Curry House", "Naan & Tikka", "Rajput Royalty", "Thali & Tandoor",
+        "Mughlai Bites", "Kebab-e-Khaas", "Zaika-e-Punjab", "North Biryani Kitchen", "Shahi Curry Corner",
+        "Royal Haveli Rasoi", "Bhature Bhavan",
+
         # Chinese Restaurants (Indian Style)
         "Dragon Chilli House", "Hakka Street", "Schezwan Junction", "Manchurian Hub", "Red Pepper Bistro",
         "Chowmein Express", "Beijing Bites", "Wok & Roll", "Kung Pao Delights", "Desi Chinese Dhaba",
@@ -190,7 +236,11 @@ def generate_restaurant_data(restaurant_start_id, restaurant_end_id, location_df
         "Chilli Garlic Express", "Tandoori Momos", "Chopstick Bistro", "Hot Wok Kitchen", "Dim Sum Delight",
         "Schezwan Rasoi", "Hunan House", "Dumpling Junction", "The Great Wall Eatery", "Momo King",
         "Beijing Bowl", "Asian Zaika", "Stir Fry & More", "Chilli Wok", "Shanghai Garden", "Dragon Spice House",
-    
+        "Momo Street", "Chinese Wok Hub", "Spice Dragon", "Mandarin Masala", "Tangra Treats", "Wok On Fire",
+        "Fusion China Express", "Spicy Bamboo Kitchen", "Red Dragon Bites", "Desi Wok & More", "Bamboo Bowl",
+        "Hot Pot Zaika", "Ginger & Garlic Wok", "Wok & Noodles", "Zen Dragon", "Oriental Tadka", "Momo Express",
+        "Chilli Chopsticks", "Wokland", "Dumpling Delight",
+
         # Italian Restaurants
         "Pizza Haveli", "Pasta Junction", "Spaghetti Zaika", "Cheesy Crust Kitchen", "Tuscany Treats",
         "Margherita Magic", "Risotto Delight", "Napoli Pizzeria", "Romeo’s Italian", "Fettuccine Feast",
@@ -199,7 +249,10 @@ def generate_restaurant_data(restaurant_start_id, restaurant_end_id, location_df
         "Penne Pasta Express", "Trattoria Italia", "Tuscany Bistro", "Pizza Town", "Oven Fresh Pizzas",
         "Amore Pizzeria", "Cheesy Pizza House", "Mamma Mia Pasta", "Focaccia Delights", "Parmigiana Palace",
         "Woodfire Pizza Junction", "Olive & Tomato", "Italian Bistro", "Mediterranean Spice",
-    
+        "Vesuvio Kitchen", "The Italian Crust", "Pizza al Forno", "Pasta Mania", "Mozza & Co.",
+        "Rustic Roma", "La Tavola", "Ciao Bella Kitchen", "Truffle & Thyme", "Azzurro Italia",
+        "Pasta Fresca", "Basilico Express", "Dolce Vita", "Italiano Delights", "Pesto Place", "Toscano Café",
+
         # Fusion & Multi-Cuisine Restaurants
         "Global Bites", "Fusion Feast", "Taste of India", "World on a Plate", "Desi Continental Fusion",
         "Spice Route", "Food Carnival", "Bistro India", "The Grand Buffet", "Zaika Junction",
@@ -207,50 +260,77 @@ def generate_restaurant_data(restaurant_start_id, restaurant_end_id, location_df
         "Royal Banquet", "Indian Aroma", "Saffron & Spice", "Zesty Bites", "Curry & Beyond",
         "Urban Masala", "Foodies Junction", "Heritage Feast", "Spice & Grill", "Flavors of India",
         "Zaika Bazaar", "Tandoori Nights", "Foodgasm Express", "Desi Flavors Hub", "Epicurean Delights",
+        "Global Tandoor", "Indo-Chinese Twist", "Flavorscape Express", "Tadka Treats", "Food Fusion Café",
+        "Pan Asia Bites", "Zaika Mélange", "Continental Curry Hub", "Curry Carnival", "Global Grub House",
+        "Zaika Tales", "Desi Delight Hub", "IndiMex Bites", "Urban Thali Kitchen", "Global Taste Bazaar",
+        "Mix & Match Kitchen", "Fusion Thali", "Culinary Carousel", "Urban Feast", "Zaika Collective",
         
         # Minimalist & Elegant
         "Ember & Sage", "The Willow Table", "Solstice Kitchen", "Luna Bistro", "Ethereal Bites",
         "Velvet Fork", "Noir & Blanc", "The Golden Spoon", "Azure Plate", "Crisp & Co.",
-        
+        "White Marble", "Slate & Silver", "Ivory Ember", "Feather & Flame", "The Still Room",
+        "Quill & Crust", "Silken Dish", "The Quiet Fork", "Alabaster Table", "Whispering Bites",
+
         # Nature-Inspired
         "Evergreen Eatery", "Wild Thyme", "Flora & Fawn", "Oak & Olive", "Rosewood Kitchen",
         "Meadow & Vine", "Pebble & Leaf", "Cedar & Sage", "Willow & Vine", "Harvest Moon Cafe",
-    
+        "Moss & Morel", "Sunbeam Grove", "Thorn & Blossom", "Pine & Petal", "Sagebrush Table",
+        "Fern & Flame", "Dewdrop Kitchen", "Wisteria & Co.", "The Garden Table", "Briarwood Bistro",
+
         # Luxury & Fine Dining
         "Opal Dining", "Celeste", "The Gilded Fork", "Ambrosia", "Ivory & Gold",
         "Élan", "Veranda", "Noir Luxe", "Maison Blanc", "Astoria Kitchen",
-        
+        "Crimson Crown", "Orchid & Velvet", "Saffron Ember", "Regal Bloom", "Pearl & Caviar",
+        "Aurum", "Silken Spoon", "The Monarch Table", "Chateau Lumière", "Luxe Reserve",
+
         # Trendy & Hipster
         "Urban Fork", "The Rusty Ladle", "Neon Bites", "Vibe & Dine", "The Graze House",
         "Wanderlust Café", "Nomad Bites", "Alchemy Kitchen", "Boho Bites", "Sage & Citrus",
-    
+        "Craft & Crumb", "Vinyl & Vanilla", "Grain Theory", "Wool & Whisk", "Brew & Barrel",
+        "The Indie Dish", "Local Lore", "Brick & Brew", "The Vibe Spot", "Thread & Toast",
+
         # Futuristic & High-End
         "Astra", "NOVA", "Nebula Eats", "Lumen", "Prism Kitchen",
         "Gravity Bites", "Cosmo Eats", "Vertex Dine", "Eon", "Horizon Bistro",
-    
+        "Quantum Table", "Stellar Spoon", "Eclipse Dine", "Zero Point Kitchen", "Nebula Nosh",
+        "CyberPlate", "Ion Flame", "Lunar Lounge", "Polaris Pantry", "Galactic Graze",
+
         # Fusion & Global
         "Nomad's Feast", "Palette", "Mélange", "Épicure", "Global Graze",
         "Zest & Zing", "Euphoric Bites", "Ambrosia Fusion", "Maison de Flavors", "Latitude Kitchen",
-    
+        "Crossroads Kitchen", "Spice Atlas", "Culture Spoon", "Nomadic Table", "Infusion Lane",
+        "Babel Bites", "Continental Fork", "Taste Tapestry", "The World Palate", "Global Ember",
+
         # Chic & Casual
         "Toast & Tonic", "Basil & Bloom", "Hearth & Home", "Drizzle & Dash", "Sizzle & Swirl",
         "Amber Plate", "Dewdrop Café", "Cocoa & Chai", "Grove Kitchen", "Rustic Charm",
-    
+        "Mellow Morsel", "Sundown Spoon", "Pine & Pesto", "Whisk & Willow", "Casual Crumbs",
+        "The Everyday Bite", "Mint & Mustard", "The Cozy Spoon", "Simple & Sage", "Mirth Kitchen",
+
         # Coastal & Tropical
         "Tide & Table", "Seabreeze Bites", "Horizon Cove", "Driftwood Dine", "Blue Lagoon Kitchen",
         "Salt & Sand", "Coral Café", "Sunset Grill", "Shoreline Eats", "Palm & Pineapple",
-    
+        "Coastal Ember", "The Coconut Bowl", "Marina Bites", "Wave & Whisk", "Beachside Bistro",
+        "Tropicana Plate", "Ocean Grove", "SeaSalt Kitchen", "Aqua & Flame", "Palm Breeze Eats",
+
         # Asian-Inspired Modern
         "Zen Garden", "Umami House", "Hikari", "Ocha & Sake", "Satori Bistro",
         "Mizu", "Kaizen Kitchen", "Yume Sushi", "Chopsticks & Co.", "Koi & Co.",
-    
+        "Shibuya Bites", "Ramen & Rice", "Kimchi Flame", "Ichigo House", "Tea & Tempura",
+        "Sakura Spoon", "Yaki & Co.", "Tokyo Ember", "Spice Kyoto", "Bento Theory",
+
         # Coffee & Dessert Bar Style
         "Mocha Muse", "Espresso Lane", "Vanilla Bean & Co.", "Sugar & Spice", "The Cocoa Loft",
         "Froth & Foam", "Lavender & Latte", "Sweet Serenade", "Velvet Crumb", "The Artisan Bean",
-    
+        "Crème & Cocoa", "Roast Ritual", "Bean & Butter", "Caffeine Bloom", "Sweet & Steep",
+        "The Daily Drip", "Honey & Roast", "ChocoWhisk", "Barista’s Bite", "Vanilla Grove",
+
         # Experimental & Unique
         "The Gastronomy Lab", "Flavorscape", "Savant Bites", "The Test Kitchen", "Alchemy Bites",
-        "InnovEat", "Taste Lab", "Avant-Garde Eats", "Culinary Canvas", "Bold & Butter"
+        "InnovEat", "Taste Lab", "Avant-Garde Eats", "Culinary Canvas", "Bold & Butter",
+        "Flavor Reactor", "Kitchen X", "Fork Theory", "Taste Architects", "The Flavor Foundry",
+        "Experimental Dish", "The Edible Concept", "Modern Morsels", "Palate Shift", "Spoon Studio"
+
     ]
 
     
@@ -283,7 +363,7 @@ def generate_restaurant_data(restaurant_start_id, restaurant_end_id, location_df
         city_name = location_row['City']
         
         # Create 2-5 restaurants per location
-        num_restaurants_for_location = random.randint(20, 50)
+        num_restaurants_for_location = random.randint(40, 100)
         location_created_date = location_df[location_df['LocationID'] == location_id]['CreatedDate'].values[0]
         
         for _ in range(num_restaurants_for_location):
@@ -300,9 +380,19 @@ def generate_restaurant_data(restaurant_start_id, restaurant_end_id, location_df
             phone = f"9{random.randint(100000000, 999999999)}"
             
             # Opening and closing hours
-            opening_hour = random.randint(7, 12)
-            closing_hour = random.randint(17, 23)
-            operating_hours = f"{opening_hour}:00  - {closing_hour}:00 "
+            # opening_hour = random.randint(7, 12)
+            # closing_hour = random.randint(17, 23)
+            # operating_hours = f"{opening_hour}:00  - {closing_hour}:00 "
+            
+            # Generate realistic operating hours
+            time_slots = [(6,10,0.05), (10,14,0.30), (14,18,0.15), (18,22,0.40), (22,26,0.08), (26,30,0.02)]
+            slot = random.choices(time_slots, weights=[slot[2] for slot in time_slots])[0]
+            # Select hour safely (even if > 23), then convert to 24-hour format
+            raw_opening_hour = random.randint(slot[0], slot[1] - 1)
+            opening_hour = raw_opening_hour % 24
+            open_duration = random.randint(8, 16)  # Open for 8–16 hours
+            closing_hour = (opening_hour + open_duration) % 24
+            operating_hours = f"{opening_hour:02d}:00 - {closing_hour:02d}:00"
             
             active_flag = np.random.choice([True, False], p=[0.9, 0.1])
             open_status = 'Open' if active_flag == True else 'Closed'
@@ -596,7 +686,7 @@ def generate_customer_address_data(customer_address_start_id, customer_address_e
     # Generate 1-4 addresses per customer in different cities
     for customer_id in customer_df['CustomerID']:
         # Number of addresses for this customer
-        num_addresses = random.randint(1, 4)
+        num_addresses = random.randint(1, 3)
         
         # Randomly select locations for this customer
         customer_locations = active_locations.sample(min(num_addresses, len(active_locations)))
@@ -715,7 +805,7 @@ def generate_delivery_agent_data(delivery_agents_start_id, delivery_agent_end_id
         location_id = location_row['LocationID']
         location_created_date = location_df[location_df['LocationID'] == location_id]['CreatedDate'].values[0]
         # Number of agents for this location
-        num_agents = random.randint(50, 100)
+        num_agents = random.randint(100, 150)
         
         for _ in range(num_agents):
             # Basic info
@@ -825,6 +915,21 @@ def generate_orders_data(order_start_id, order_end_id, customer_df, restaurant_d
             # print(restaurant)
             restaurant_id = restaurant['RestaurantID']
             # print(restaurant_id)
+            
+            # Parse operating hours from restaurant
+            # start_hr, end_hr = map(int, restaurant['OperatingHours'].replace(" ", "").split("-"))
+            start_hr, end_hr = [
+                int(time_part.split(":")[0]) for time_part in restaurant['OperatingHours'].replace(" ", "").split("-")
+            ]
+            # Generate hour within operating window
+            if end_hr > start_hr:
+                order_hour = random.randint(start_hr, end_hr - 1)
+            else:
+                order_hour = random.choice(list(range(start_hr, 24)) + list(range(0, end_hr)))
+
+            # Compose order datetime
+            order_date_date = pd.to_datetime(address['CreatedDate']) + timedelta(days=random.randint(1, 90))
+            order_date = datetime.combine(order_date_date.date(), time(hour=order_hour, minute=random.randint(0, 59)))
             
             # Order amount (initially set to 0, will be updated later)
             total_amount = 0
@@ -1112,7 +1217,7 @@ def generate_delivery_data(order_df, delivery_agent_df, delivery_start_id,restau
             # Estimated time (10-60 minutes)
             estimated_time = random.randint(15, 60)
             if delivery_status in ['Delivered','Returned']:
-                delivered_time = np.random.choice([random.randint(estimated_time - 5,estimated_time),random.randint(estimated_time,estimated_time + 20)],p=[0.7,0.3])
+                delivered_time = np.random.choice([random.randint(estimated_time - 5,estimated_time),random.randint(estimated_time,estimated_time + 20)],p=[0.6,0.4])
             else :
                 delivered_time = None
             # print(delivered_time)
@@ -1169,58 +1274,69 @@ def update_restaurant_ratings(menu_df,restaurant_df):
 
 
 ## Reading all files already generated
-location_df = pd.read_csv('data1/location.csv')
-restaurant_df = pd.read_csv('data1/restaurant.csv')
-restaurant_df = restaurant_df.sample(20) # to update some restaunrants
-menu_df = pd.read_csv('data1/menu_items.csv') ## menu_items.csv
-menu_df = menu_df[menu_df['RestaurantID'].isin(restaurant_df['RestaurantID'])] # to update some menu items
+# location_df = pd.read_csv('data1/location.csv')
+# restaurant_df = pd.read_csv('data1/restaurant.csv')
+# # restaurant_df = restaurant_df.sample(20) # to update some restaunrants
+# menu_df = pd.read_csv('data1/menu_items.csv') ## menu_items.csv
+# # menu_df = menu_df[menu_df['RestaurantID'].isin(restaurant_df['RestaurantID'])] # to update some menu items
 
-customer_df = pd.read_csv('data1/customer.csv')
-address_df = pd.read_csv('data1/customer_address.csv')
-# login_audit_df = pd.read_csv('data1/login_audit.csv')
-delivery_agent_df = pd.read_csv('data1/delivery_agent.csv')
-# order_df = pd.read_csv('data1/orders.csv')
+# customer_df = pd.read_csv('data1/customer.csv')
+# address_df = pd.read_csv('data1/customer_address.csv')
+# # login_audit_df = pd.read_csv('data1/login_audit.csv')
+# delivery_agent_df = pd.read_csv('data1/delivery_agent.csv')
+# # order_df = pd.read_csv('data1/orders.csv')
 
 # # # Generate location data
-# location_df = generate_location_data(LOCATION_START_ID, LOCATION_END_ID)
-# # print(location_df.to_string())
+location_df = generate_location_data(LOCATION_START_ID, LOCATION_END_ID)
+print('Location Data Generated')
+# print(location_df.to_string())
 
 # # # Generate restaurant data
-# restaurant_df = generate_restaurant_data(RESTAURANT_START_ID, RESTAURANT_END_ID, location_df)
+restaurant_df = generate_restaurant_data(RESTAURANT_START_ID, RESTAURANT_END_ID, location_df)
+print('Restaurant Data Generated')
 # # print(restaurant_df.to_string())
 
 # # # Generate menu data
-# menu_df = generate_menu_data(MENU_START_ID, MENU_END_ID, restaurant_df)
+menu_df = generate_menu_data(MENU_START_ID, MENU_END_ID, restaurant_df)
+print('Menu Data Generated')
 # # print(menu_df.to_string())
 
 # # # # Generate customer data
-# customer_df = generate_customer_data(CUSTOMER_START_ID, CUSTOMER_END_ID)
+customer_df = generate_customer_data(CUSTOMER_START_ID, CUSTOMER_END_ID)
+print('Customer Data Generated')
 # # # print(customer_df.to_string())
 
 # # # # Generate customer address data
-# address_df = generate_customer_address_data(CUSTOMER_ADDRESS_START_ID, CUSTOMER_ADDRESS_END_ID, customer_df, location_df)
+address_df = generate_customer_address_data(CUSTOMER_ADDRESS_START_ID, CUSTOMER_ADDRESS_END_ID, customer_df, location_df)
+print('Customer Address Data Generated')
 # # # print(address_df.to_string())
 
 # # # # Generate login audit data
-# login_audit_df = generate_login_audit_data(CUSTOMER_LOGIN_AUDIT_START_ID, CUSTOMER_LOGIN_AUDIT_END_ID, customer_df)
+login_audit_df = generate_login_audit_data(CUSTOMER_LOGIN_AUDIT_START_ID, CUSTOMER_LOGIN_AUDIT_END_ID, customer_df)
+print('Login Audit Data Generated')
 # # # print(login_audit_df.to_string())
 
 # # # # Generate delivery agent data
-# delivery_agent_df = generate_delivery_agent_data(DELIVERY_AGENT_START_ID, DELIVERY_AGENT_END_ID, location_df)
+delivery_agent_df = generate_delivery_agent_data(DELIVERY_AGENT_START_ID, DELIVERY_AGENT_END_ID, location_df)
+print('Delivery Agent Data Generated')
 # # print(delivery_agent_df.to_string())
 
 # # # Generate orders data
 order_df = generate_orders_data(ORDER_START_ID, ORDER_END_ID, customer_df, restaurant_df, address_df, location_df)
+print('order data generated')
 # print(order_df.to_string())
 
 # # # # Generate order items data
 order_items_df = generate_order_items_data(ORDER_ITEMS_START_ID,order_df, menu_df)
+print('order item data generated')
 order_df = order_df[(order_df['TotalAmount'] != 0)]
+print('order totalprice and all updated')
 # print(order_items_df.to_string())
 # print(order_df.to_string())
 
 # # # # Generate delivery data
 delivery_df = generate_delivery_data(order_df, delivery_agent_df, DELIVERY_START_ID,restaurant_df)
+print('delivered')
 # # print(delivery_df.to_string())
 
 
@@ -1242,19 +1358,31 @@ update_menu_item_ratings(order_items_df,menu_df)
 update_restaurant_ratings(menu_df,restaurant_df)    
 
 
-# location_df.to_csv('data1/location.csv',index=False)
-# customer_df.to_csv('data1/customer.csv', index=False)
-# address_df.to_csv('data1/customer_address.csv', index=False)
-# delivery_agent_df.to_csv('data1/delivery_agent.csv', index=False)
-# restaurant_df.to_csv('data1/restaurant.csv', index=False)
-# menu_df.to_csv('data1/menu_items.csv', index=False)
-# login_audit_df.to_csv('data1/login_audit.csv', index=False)
-# order_df.to_csv('data1/orders.csv', index=False)
-# order_items_df.to_csv('data1/order_items.csv', index=False)
-# delivery_df.to_csv('data1/delivery.csv', index=False)
+location_df.to_csv('data1/location.csv',index=False)
+customer_df.to_csv('data1/customer.csv', index=False)
+address_df.to_csv('data1/customer_address.csv', index=False)
+delivery_agent_df.to_csv('data1/delivery_agent.csv', index=False)
+restaurant_df.to_csv('data1/restaurant.csv', index=False)
+menu_df.to_csv('data1/menu_items.csv', index=False)
+login_audit_df.to_csv('data1/login_audit.csv', index=False)
+order_df.to_csv('data1/orders.csv', index=False)
+order_items_df.to_csv('data1/order_items.csv', index=False)
+delivery_df.to_csv('data1/delivery.csv', index=False)
 
-restaurant_df.to_csv('data2/restaurant.csv', index=False)
-menu_df.to_csv('data2/menu_items.csv', index=False)
-order_df.to_csv('data2/orders.csv', index=False)
-order_items_df.to_csv('data2/order_items.csv', index=False)
-delivery_df.to_csv('data2/delivery.csv', index=False)
+# restaurant_df.to_csv('data2/restaurant.csv', index=False)
+# menu_df.to_csv('data2/menu_items.csv', index=False)
+# order_df.to_csv('data2/orders.csv', index=False)
+# order_items_df.to_csv('data2/order_items.csv', index=False)
+# delivery_df.to_csv('data2/delivery.csv', index=False)
+
+
+
+
+
+
+end_time = datetime.now()
+print(f"Program ended at: {end_time}")
+
+# Total duration
+duration = end_time - start_time
+print(f"Total execution time: {duration}")
