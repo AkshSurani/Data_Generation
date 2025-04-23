@@ -1,0 +1,41 @@
+LocationID,City,State,PinCode,ActiveFlag,CreatedDate,ModifiedDate
+1,Delhi,Delhi,780487,True,2023-11-11 07:24:55,
+2,Mumbai,Maharashtra,887572,True,2023-09-17 12:29:14,
+3,Bangalore,Karnataka,344053,True,2025-01-28 06:50:36,
+4,Hyderabad,Telangana,217473,True,2020-06-07 04:43:01,2024-08-28 12:55:22
+5,Chennai,Tamil Nadu,681858,True,2022-09-01 06:24:03,
+6,Kolkata,West Bengal,552417,True,2024-11-14 12:24:11,
+7,Pune,Maharashtra,208246,True,2021-03-18 07:01:06,
+8,Ahmedabad,Gujarat,639903,True,2022-10-15 03:18:02,2023-06-28 15:30:31
+9,Jaipur,Rajasthan,698508,True,2023-12-11 12:55:27,
+10,Lucknow,Uttar Pradesh,791453,True,2022-07-07 20:14:59,2023-02-14 11:26:29
+11,Chandigarh,Punjab,549898,True,2024-04-19 15:19:16,
+12,Bhopal,Madhya Pradesh,727889,True,2023-04-18 12:04:30,
+13,Guwahati,Assam,116814,True,2025-03-12 04:29:31,2025-04-14 19:14:49
+14,Kochi,Kerala,277414,True,2021-07-01 13:15:09,2022-01-28 23:45:57
+15,Indore,Madhya Pradesh,466778,True,2020-06-26 05:23:07,
+16,Surat,Gujarat,335772,True,2024-10-12 05:30:03,2025-04-16 00:22:55
+17,Nagpur,Maharashtra,462944,True,2020-11-12 11:43:32,
+18,Patna,Bihar,508382,True,2023-08-22 20:38:33,
+19,Vadodara,Gujarat,998662,True,2024-05-05 05:35:39,2024-10-13 18:20:36
+20,Thane,Maharashtra,387370,True,2024-05-01 03:29:39,2024-07-20 20:01:13
+21,Agra,Uttar Pradesh,875179,True,2022-10-19 06:11:53,2024-07-15 11:18:27
+22,Nashik,Maharashtra,240889,True,2020-09-17 23:05:23,2024-10-14 16:56:20
+23,Faridabad,Haryana,506922,True,2024-12-20 13:48:32,
+24,Meerut,Uttar Pradesh,417419,True,2022-12-17 00:50:23,2023-08-21 17:50:27
+25,Rajkot,Gujarat,758564,True,2021-12-16 23:44:57,2024-03-18 05:02:05
+26,Varanasi,Uttar Pradesh,489201,True,2023-02-21 15:33:07,2024-06-26 04:15:04
+27,Srinagar,Jammu and Kashmir,848797,True,2024-03-03 05:07:19,
+28,Aurangabad,Maharashtra,803384,True,2021-06-19 10:54:04,
+29,Dhanbad,Jharkhand,413445,True,2025-01-16 13:15:25,2025-02-06 21:58:11
+30,Amritsar,Punjab,354098,True,2020-10-25 12:12:16,2024-06-09 10:20:20
+31,Surat,Gujarat,508591,True,2022-12-06 11:07:50,
+32,Morbi,Gujarat,776563,True,2024-02-04 02:09:11,2024-08-19 03:14:53
+33,Anand,Gujarat,280555,True,2024-12-26 22:53:11,2025-02-06 12:05:44
+34,Nadiad,Gujarat,329684,True,2020-05-25 12:30:58,2020-12-27 10:36:47
+35,Gandhinagar,Gujarat,845911,True,2021-04-07 08:06:04,2022-12-14 08:09:54
+36,Porbandar,Gujarat,789514,True,2020-08-15 10:47:34,
+37,Himatnagar,Gujarat,775822,True,2022-02-26 03:39:45,
+38,Kota,Rajasthan,874544,True,2022-12-08 16:43:20,
+39,Vijayawada,Andhra Pradesh,594714,True,2021-05-13 01:10:52,2022-12-19 04:58:26
+40,Hubli,Karnataka,781088,True,2025-01-12 21:45:46,2025-01-27 14:35:40

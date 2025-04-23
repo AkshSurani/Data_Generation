@@ -22,7 +22,7 @@ restaurant_df = pd.read_csv('data1/restaurant.csv')
 
 def update_customer_data(customer_df):
     
-    customer_df = customer_df.sample(100)
+    customer_df = customer_df.sample(212)
     
     food_preferences = ['Veg', 'Non-Veg', 'Vegan', 'Eggetarian']
     cuisine_types = ['North Indian', 'South Indian', 'Chinese', 'Italian', 'Continental', 
@@ -117,7 +117,7 @@ def update_customer_address_data(address_df):
     ]
     
     # Randomly sample 100 addresses for updates
-    address_df = address_df.sample(100)
+    address_df = address_df.sample(617)
     
     for index, row in address_df.iterrows():
         address_id = row['AddressID']  # Find the AddressID
@@ -181,7 +181,7 @@ def update_restaurant_data(restaurant_df):
     ]
     
     # Randomly sample 100 restaurants for updates
-    restaurant_df = restaurant_df.sample(50)
+    restaurant_df = restaurant_df.sample(76)
     
     for index, row in restaurant_df.iterrows():
         restaurant_id = row['RestaurantID']  # Find the RestaurantID
@@ -210,19 +210,19 @@ def update_restaurant_data(restaurant_df):
 
 
 
-# customer_df_new = update_customer_data(customer_df)
-# customer_df_new.to_csv('data2/customer.csv', index=False)
+customer_df_new = update_customer_data(customer_df)
+customer_df_new.to_csv('data3/customer.csv', index=False)
 
 
-# delivery_agent_df_new = update_delivery_agent_data(delivery_agent_df)
-# delivery_agent_df_new.to_csv('data3/delivery_agent.csv', index=False)
+delivery_agent_df_new = update_delivery_agent_data(delivery_agent_df)
+delivery_agent_df_new.to_csv('data3/delivery_agent.csv', index=False)
 
 
-# address_df_new = update_customer_address_data(address_df)
-# address_df_new.to_csv('data3/customer_address.csv', index=False)
+address_df_new = update_customer_address_data(address_df)
+address_df_new.to_csv('data3/customer_address.csv', index=False)
 
 menu_df_new = update_menu_data(menu_df)
 menu_df_new.to_csv('data3/menu_items.csv', index=False)
 
-# restaurant_df_new = update_restaurant_data(restaurant_df)
-# restaurant_df_new.to_csv('data3/restaurant.csv', index=False)
+restaurant_df_new = update_restaurant_data(restaurant_df)
+restaurant_df_new.to_csv('data3/restaurant.csv', index=False)

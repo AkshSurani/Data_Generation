@@ -1,16 +1,7 @@
 import pandas as pd
-import numpy as np
-from faker import Faker
-import random
-from datetime import datetime, timedelta
-import json
-import os
-
-# Initialize Faker
-fake = Faker('en_IN')  
 
 menu_file_1 = 'data1/menu_items.csv'
-menu_file_2 = 'data3/menu_items.csv'
+menu_file_2 = 'data2/menu_items.csv'
 
 
 def sync_updated_menu_prices(main_csv_path, updated_csv_path):
