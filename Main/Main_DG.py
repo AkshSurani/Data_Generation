@@ -111,7 +111,6 @@ def generate_location_data(location_start_id, location_end_id):
         ('Aurangabad', 'Maharashtra'),
         ('Dhanbad', 'Jharkhand'),
         ('Amritsar', 'Punjab'),
-        ('Surat', 'Gujarat'),
         ('Morbi', 'Gujarat'),
         ('Anand', 'Gujarat'),
         ('Nadiad', 'Gujarat'),
@@ -120,7 +119,9 @@ def generate_location_data(location_start_id, location_end_id):
         ('Himatnagar', 'Gujarat'),
         ('Kota', 'Rajasthan'),
         ('Vijayawada', 'Andhra Pradesh'),
-        ('Hubli', 'Karnataka')
+        ('Hubli', 'Karnataka'),
+        ('Mysore', 'Karnataka'),
+
     ]
     
     data = []
@@ -384,14 +385,24 @@ def generate_restaurant_data(restaurant_start_id, restaurant_end_id, location_df
             # closing_hour = random.randint(17, 23)
             # operating_hours = f"{opening_hour}:00  - {closing_hour}:00 "
             
-            # Generate realistic operating hours
-            time_slots = [(6,10,0.05), (10,14,0.30), (14,18,0.15), (18,22,0.40), (22,26,0.08), (26,30,0.02)]
-            slot = random.choices(time_slots, weights=[slot[2] for slot in time_slots])[0]
-            # Select hour safely (even if > 23), then convert to 24-hour format
-            raw_opening_hour = random.randint(slot[0], slot[1] - 1)
-            opening_hour = raw_opening_hour % 24
-            open_duration = random.randint(8, 16)  # Open for 8–16 hours
-            closing_hour = (opening_hour + open_duration) % 24
+             # New fixed time slots with exact probabilities
+            shifts = [
+                (6, 11, 0.14),   # 06:00–11:00
+                (11, 15, 0.12),  # 11:00–15:00
+                (12, 16, 0.18),  # 12:00–16:00
+                (16, 19, 0.11),  # 16:00–19:00
+                (19, 23, 0.18),  # 19:00–23:00
+                (20, 24, 0.18),  # 20:00–00:00
+                (24, 30, 0.07)   # 00:00–06:00 (Next day)
+            ]
+
+            # Choose shift based on new probabilities
+            chosen_shift = random.choices(shifts, weights=[s[2] for s in shifts])[0]
+            start_raw, end_raw, shift_prob = chosen_shift
+
+            # Convert to 24-hour time
+            opening_hour = start_raw % 24
+            closing_hour = end_raw % 24
             operating_hours = f"{opening_hour:02d}:00 - {closing_hour:02d}:00"
             
             active_flag = np.random.choice([True, False], p=[0.9, 0.1])
@@ -578,7 +589,20 @@ def generate_menu_data(menu_start_id, menu_end_id, restaurant_df):
                 item_type = "Veg"
             
             description = random.choice(descriptions).format(item_name)
-            price = random.randint(50, 500)
+            # price = random.randint(50, 500)
+            price_tier = random.choices(
+                population=[
+                    (50, 99),
+                    (100, 199),
+                    (200, 299),
+                    (300, 399),
+                    (400, 500)
+                ],
+                weights=[0.2, 0.30, 0.35, 0.1, 0.05],
+                k=1
+            )[0]
+
+            price = random.randint(price_tier[0], price_tier[1])
             created_date = fake.date_time_between(start_date=pd.to_datetime(restaurant_created_date), end_date=pd.to_datetime(restaurant_created_date) + pd.DateOffset(months=2))
             modified_date = fake.date_time_between(start_date=created_date, end_date='now')
 
@@ -916,20 +940,23 @@ def generate_orders_data(order_start_id, order_end_id, customer_df, restaurant_d
             restaurant_id = restaurant['RestaurantID']
             # print(restaurant_id)
             
-            # Parse operating hours from restaurant
-            # start_hr, end_hr = map(int, restaurant['OperatingHours'].replace(" ", "").split("-"))
+             # Parse operating hours from restaurant
             start_hr, end_hr = [
                 int(time_part.split(":")[0]) for time_part in restaurant['OperatingHours'].replace(" ", "").split("-")
             ]
-            # Generate hour within operating window
-            if end_hr > start_hr:
-                order_hour = random.randint(start_hr, end_hr - 1)
-            else:
-                order_hour = random.choice(list(range(start_hr, 24)) + list(range(0, end_hr)))
 
-            # Compose order datetime
-            order_date_date = pd.to_datetime(address['CreatedDate']) + timedelta(days=random.randint(1, 90))
-            order_date = datetime.combine(order_date_date.date(), time(hour=order_hour, minute=random.randint(0, 59)))
+            # Construct available hours across midnight
+            if end_hr > start_hr:
+                available_hours = list(range(start_hr, end_hr))
+            else:
+                available_hours = list(range(start_hr, 24)) + list(range(0, end_hr))
+
+            # Just pick a random hour — shift probability already handled upstream
+            order_hour = random.choice(available_hours)
+
+            # Final order datetime
+            # order_date_date = pd.to_datetime(address['CreatedDate']) + timedelta(days=random.randint(1, 90))
+            order_date = datetime.combine(order_date.date(), time(hour=order_hour, minute=random.randint(0, 59)))
             
             # Order amount (initially set to 0, will be updated later)
             total_amount = 0
@@ -937,17 +964,10 @@ def generate_orders_data(order_start_id, order_end_id, customer_df, restaurant_d
             
             # Status
             # days_since_order = (datetime.now() - order_date).days
-            hours_since_order = (datetime.now() - order_date).total_seconds() / 3600
-            if hours_since_order > 2 :
-                status = random.choices(
+            status = random.choices(
                     order_statuses, 
-                    weights=[0.8, 0.1, 0.05, 0.05]
-                )[0]
-            else:
-                status = random.choices(
-                    ['Delivered', 'In Transit', 'Preparing'], 
-                    weights=[0.6, 0.3, 0.1]
-                )[0]
+                    weights=[0.8, 0.1, 0.03, 0.07]
+            )[0]
             
             # Payment method
             payment_method = np.random.choice(payment_methods,p=[0.2,0.7,0.05,0.05])
@@ -1045,7 +1065,12 @@ def generate_order_items_data(order_items_start_id,order_df, menu_df):
             continue
         # print('filtered menu ids',filtered_menu_id)
         # Generate 1-5 random order items
-        num_items = random.randint(1, 5)
+        # num_items = random.randint(1, 5)
+        num_items = random.choices(
+            population=[1, 2, 3, 4, 5],
+            weights=[0.5, 0.3, 0.1, 0.06, 0.04],
+            k=1
+        )[0]
         # Select unique menu items
         selected_menu_ids = random.sample(filtered_menu_id, min(num_items, len(filtered_menu_id)))
         
@@ -1057,7 +1082,12 @@ def generate_order_items_data(order_items_start_id,order_df, menu_df):
             price = menu_item['Price']
             
             # Generate random quantity
-            quantity = random.randint(1, 3)
+            # quantity = random.randint(1, 3)
+            quantity = random.choices(
+                population=[1, 2, 3],
+                weights=[0.65, 0.25, 0.1],
+                k=1
+            )[0]
             
             # Calculate subtotal
             subtotal = price * quantity
@@ -1205,22 +1235,28 @@ def generate_delivery_data(order_df, delivery_agent_df, delivery_start_id,restau
             agent_id = agent['DeliveryAgentID']
             
             # Set status based on order status
-            if order['Status'] == 'Delivered':
-                delivery_status = 'Delivered'
-            elif order['Status'] == 'Failed':
+            if order['Status'] == 'Failed':
                 delivery_status = 'Failed'
             elif order['Status'] == 'Returned':
                 delivery_status = 'Returned'
             else:
-                delivery_status = random.choice(['In Transit', 'Assigned'])
+                delivery_status = 'Delivered'
             
             # Estimated time (10-60 minutes)
-            estimated_time = random.randint(15, 60)
-            if delivery_status in ['Delivered','Returned']:
-                delivered_time = np.random.choice([random.randint(estimated_time - 5,estimated_time),random.randint(estimated_time,estimated_time + 20)],p=[0.6,0.4])
-            else :
+            estimated_time = random.randint(15, 55)
+
+            if delivery_status in ['Delivered', 'Returned']:
+                # Increase the chance of fast delivery
+                delay_type = np.random.choice(['fast', 'normal', 'slow'], p=[0.4, 0.4, 0.2])
+
+                if delay_type == 'fast':
+                    delivered_time = random.randint(max(10, estimated_time - 10), estimated_time)
+                elif delay_type == 'normal':
+                    delivered_time = random.randint(estimated_time + 1, estimated_time + 10)
+                else:  # slow
+                    delivered_time = random.randint(estimated_time + 11, estimated_time + 30)
+            else:
                 delivered_time = None
-            # print(delivered_time)
             
             # Delivery date based on order date
             if delivery_status in ['Delivered','Returned']:
@@ -1256,7 +1292,6 @@ def generate_delivery_data(order_df, delivery_agent_df, delivery_start_id,restau
             #     break
     
     return pd.DataFrame(data)
-
 
 def update_menu_item_ratings(order_items_df,menu_df):
     for _,items in menu_df.iterrows():
