@@ -847,7 +847,11 @@ def generate_delivery_agent_data(delivery_agents_start_id, delivery_agent_end_id
             status = np.random.choice([True, False], p=[0.9, 0.1]) # True = Active , False = Inactive Delivery
             
             # Rating (1.0 to 5.0)
-            rating = round(random.uniform(3.0, 5.0), 1)
+            # rating = round(random.uniform(3.0, 5.0), 1)
+            ranges = [(1.0, 2.0), (2.0, 3.0), (3.0, 4.0), (4.0, 5.0)]
+            probabilities = [0.05, 0.15, 0.20, 0.60]
+            chosen_range = random.choices(ranges, weights=probabilities, k=1)[0]
+            rating = round(random.uniform(*chosen_range), 1)
             
             email_domain = random.choice(['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com'])
             email = f"{name.lower().replace(' ', '')}{random.randint(1, 999)}@{email_domain}"
@@ -1322,6 +1326,7 @@ customer_df = customer_df.sample(5000)
 address_df = pd.read_csv('data1/customer_address.csv')
 login_audit_df = pd.read_csv('data1/login_audit.csv')
 delivery_agent_df = pd.read_csv('data1/delivery_agent.csv')
+# delivery_agent_df.to_json('data1/delivery_agent.json',orient='records', lines=False, indent=4)
 # order_df = pd.read_csv('data1/orders.csv')
 order_items_df_old = pd.read_csv('data1/order_items.csv')
 # df2 = pd.read_csv('data2/order_items.csv')
@@ -1410,6 +1415,7 @@ print('restaurant rattings updated')
 # customer_df.to_csv('data1/customer.csv', index=False)
 # address_df.to_csv('data1/customer_address.csv', index=False)
 # delivery_agent_df.to_csv('data1/delivery_agent.csv', index=False)
+# delivery_agent_df.to_json('data1/delivery_agent.json',orient='records', lines=False, indent=4)
 # restaurant_df.to_csv('data1/restaurant.csv', index=False)
 # menu_df.to_csv('data1/menu_items.csv', index=False)
 # login_audit_df.to_csv('data1/login_audit.csv', index=False)
