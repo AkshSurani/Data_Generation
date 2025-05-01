@@ -23,8 +23,12 @@ file_names = ['customer_address','customer','delivery_agent','delivery','locatio
 bucket_name = f'{my_secrets['AWS_S3_BUCKET_NAME']}'
 
 for files in file_names:
-    file_name = f'{folder_name}/{files}.csv'
-    object_name = f'{my_secrets['AWS_S3_BUCKET_FOLDER_NAME']}/{year}/{month}/{day}/{files}.csv'
+    if files in ['delivery_agent']:
+        file_name = f'{folder_name}/{files}.json'
+        object_name = f'{my_secrets['AWS_S3_BUCKET_FOLDER_NAME']}/{year}/{month}/{day}/{files}.json'
+    else:
+        file_name = f'{folder_name}/{files}.csv'
+        object_name = f'{my_secrets['AWS_S3_BUCKET_FOLDER_NAME']}/{year}/{month}/{day}/{files}.csv'
     
     try:
         s3.upload_file(file_name, bucket_name, object_name)

@@ -8,8 +8,8 @@ import os
 
 
 # Load both CSVs
-df1 = pd.read_csv('data1/orders.csv')
-df2 = pd.read_csv('data2/orders.csv')
+df1 = pd.read_csv('data1/order_items.csv')
+df2 = pd.read_csv('data2/order_items.csv')
 
 # Combine them
 combined = pd.concat([df1, df2], ignore_index=True)
@@ -18,4 +18,4 @@ combined = pd.concat([df1, df2], ignore_index=True)
 combined = combined.drop_duplicates()
 
 # Save to a new CSV
-combined.to_csv('data/combined.csv', index=False)
+combined.to_csv('temp/combined.csv', index=False)
