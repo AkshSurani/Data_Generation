@@ -9,16 +9,17 @@ s3 = boto3.client(
      aws_access_key_id=f'{my_secrets['AWS_ACCESS_KEY']}',
      aws_secret_access_key=f'{my_secrets['AWS_SECRET_KEY']}'
 )
-    
+
 today = datetime.today()
-day = today.day
-month = today.month
+day = 28
+month = 4
 year = today.year
 
 print(day, month, year)
 
-folder_name = 'data3'
+folder_name = 'data5'
 file_names = ['customer_address','customer','delivery_agent','delivery','location','login_audit','menu_items','order_items','orders','restaurant']
+# file_names = ['delivery_agent']
 
 bucket_name = f'{my_secrets['AWS_S3_BUCKET_NAME']}'
 

@@ -27,6 +27,8 @@ if not os.path.exists('data2'):
 if not os.path.exists('data3'):
     os.makedirs('data3')
 
+if not os.path.exists('data4'):
+    os.makedirs('data4')
 
 ## ORDERS
 NUM_ORDERS = 100  # Number of orders
@@ -80,11 +82,14 @@ def generate_orders_data(order_start_id, order_end_id, customer_df, restaurant_d
         
         
             ## generate only last 6 months orders
-            six_months_ago = datetime.now() - timedelta(days=180)
-            start_date = max(six_months_ago, pd.to_datetime(address['CreatedDate']))
-            order_date = fake.date_time_between(start_date=start_date, end_date='now')
+            # six_months_ago = datetime.now() - timedelta(days=180)
+            # start_date = max(six_months_ago, pd.to_datetime(address['CreatedDate']))
+            # order_date = fake.date_time_between(start_date=start_date, end_date='now')
             
             ## Generate a random order date after the address creation date
+
+            end_date = datetime(2021, 12, 31, 23, 59, 59)
+            order_date = fake.date_time_between(start_date=pd.to_datetime(address['CreatedDate']), end_date=end_date)
             # order_date = fake.date_time_between(start_date=pd.to_datetime(address['CreatedDate']), end_date='now')
 
             # Created and modified dates
@@ -480,24 +485,42 @@ def update_restaurant_ratings(menu_df,restaurant_df):
 location_df = pd.read_csv('data1/location.csv')
 
 restaurant_df = pd.read_csv('data1/restaurant.csv')
-restaurant_df = restaurant_df.sample(1000) # to update some restaunrants
+# restaurant_df = restaurant_df.sample(1000) # to update some restaunrants
+restaurant_df['CreatedDate'] = pd.to_datetime(restaurant_df['CreatedDate'])
+restaurant_df = restaurant_df[restaurant_df['CreatedDate'].dt.year.isin([2020, 2021])]
+print('filtered customer data', restaurant_df)
 
 menu_df = pd.read_csv('data1/menu_items.csv') ## menu_items.csv
 menu_df = menu_df[menu_df['RestaurantID'].isin(restaurant_df['RestaurantID'])] # to update some menu items
+menu_df['CreatedDate'] = pd.to_datetime(menu_df['CreatedDate'])
+menu_df = menu_df[menu_df['CreatedDate'].dt.year.isin([2020, 2021])]
+print('filtered customer data', menu_df)
 
 # for all time customers
 # customer_df = pd.read_csv('data1/customer.csv')
 # customer_df = customer_df.sample(15000)
 
 # for last 6 to 12 months
+# customer_df = pd.read_csv('temp/customer.csv')
+
+# for 2020 and 2021 
 customer_df = pd.read_csv('temp/customer.csv')
+customer_df['CreatedDate'] = pd.to_datetime(customer_df['CreatedDate'])
+customer_df = customer_df[customer_df['CreatedDate'].dt.year.isin([2020, 2021])]
+print('filtered customer data', customer_df)
 
 address_df = pd.read_csv('data1/customer_address.csv')
+address_df['CreatedDate'] = pd.to_datetime(address_df['CreatedDate'])
+address_df = address_df[address_df['CreatedDate'].dt.year.isin([2020, 2021])]
+print('filtered customer data', address_df)
+
 login_audit_df = pd.read_csv('data1/login_audit.csv')
 
 # delivery_agent_df = pd.read_csv('data1/delivery_agent.csv')
 delivery_agent_df = pd.read_json('data1/delivery_agent.json')
-
+delivery_agent_df['CreatedDate'] = pd.to_datetime(delivery_agent_df['CreatedDate'])
+delivery_agent_df = delivery_agent_df[delivery_agent_df['CreatedDate'].dt.year.isin([2020, 2021])]
+print('filtered customer data', delivery_agent_df)
 
 
 order_df = generate_orders_data(ORDER_START_ID, ORDER_END_ID, customer_df, restaurant_df, address_df, location_df)
@@ -541,14 +564,14 @@ update_restaurant_ratings(menu_df,restaurant_df)
 print('restaurant rattings updated', datetime.now() , ' < total time > ', datetime.now() - start_time)
 
 
-## when generate last 6 months data then do some changes in order_df and also read customer_df from temp folder
-## and if generating all time data then read customer_df from data1 folder
+# when generate last 6 months data then do some changes in order_df and also read customer_df from temp folder
+# and if generating all time data then read customer_df from data1 folder
 
-restaurant_df.to_csv('data3/restaurant.csv', index=False)
-menu_df.to_csv('data3/menu_items.csv', index=False)
-order_df.to_csv('data3/orders.csv', index=False)
-order_items_df.to_csv('data3/order_items.csv', index=False)
-delivery_df.to_csv('data3/delivery.csv', index=False)
+restaurant_df.to_csv('data4/restaurant.csv', index=False)
+menu_df.to_csv('data4/menu_items.csv', index=False)
+order_df.to_csv('data4/orders.csv', index=False)
+order_items_df.to_csv('data4/order_items.csv', index=False)
+delivery_df.to_csv('data4/delivery.csv', index=False)
 
 
 end_time = datetime.now()
